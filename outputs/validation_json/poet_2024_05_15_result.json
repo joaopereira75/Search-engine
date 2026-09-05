@@ -1,0 +1,279 @@
+{
+  "runner_version": "CASE-RUNNER-4.2.0",
+  "decision": "WATCHLIST / REJECT",
+  "base_scenario": "Base",
+  "hard_vetoes": [],
+  "red_flags": [
+    "Bear: severe customer concentration risk",
+    "Base: severe customer concentration risk",
+    "Bull: severe customer concentration risk",
+    "insufficient_asymmetry"
+  ],
+  "watch_items": [
+    "Base: terminal value dominates scenario valuation",
+    "Bull: terminal value dominates scenario valuation"
+  ],
+  "valuation": {
+    "engine_version": "EGE-4.0.2-final",
+    "status": "OK",
+    "market": {
+      "market_cap_usd": 133000000,
+      "enterprise_value_usd": 109400000
+    },
+    "scenario_valuation": [
+      {
+        "scenario": "Bear",
+        "probability": 0.3,
+        "revenue_year_n_usd": 56367.85000000002,
+        "ebit_year_n_usd": 2818.3925000000013,
+        "fcff_year_n_usd": 1485.0110082500007,
+        "nol_balance_remaining_usd": 159992108.51476753,
+        "revenue_quality_check": null,
+        "enterprise_value_usd": 14146.70009603072,
+        "equity_value_pre_dilution_usd": 68614146.70009603,
+        "equity_value_usd": 23614146.700096026,
+        "terminal_value_pct_of_ev": 0.7863084384150074,
+        "tv_dominance_flag": "OK",
+        "physical_feasibility": {
+          "status": "NOT_APPLICABLE",
+          "reason": "business_model='not_applicable': sem teto físico fiável.",
+          "concentration_verdict": "SEVERE_CONCENTRATION_RISK",
+          "top_customer_revenue_pct": 0.9
+        },
+        "margin_credibility": {
+          "status": "NOT_COMPUTABLE"
+        },
+        "scenario_red_flags": [],
+        "return_multiple": 0.17754997518869192,
+        "return_pct": -0.822450024811308
+      },
+      {
+        "scenario": "Base",
+        "probability": 0.45,
+        "revenue_year_n_usd": 1120000.0,
+        "ebit_year_n_usd": 168000.0,
+        "fcff_year_n_usd": 104613.6,
+        "nol_balance_remaining_usd": 159529600.82065982,
+        "revenue_quality_check": null,
+        "enterprise_value_usd": 1207558.4598002217,
+        "equity_value_pre_dilution_usd": 49807558.45980022,
+        "equity_value_usd": 24807558.45980022,
+        "terminal_value_pct_of_ev": 0.8236429485688567,
+        "tv_dominance_flag": "TV_DOMINATED",
+        "physical_feasibility": {
+          "status": "NOT_APPLICABLE",
+          "reason": "business_model='not_applicable': sem teto físico fiável.",
+          "concentration_verdict": "SEVERE_CONCENTRATION_RISK",
+          "top_customer_revenue_pct": 0.9
+        },
+        "margin_credibility": {
+          "status": "NOT_COMPUTABLE"
+        },
+        "scenario_red_flags": [
+          "terminal_value_dominates_thesis"
+        ],
+        "return_multiple": 0.18652299593834754,
+        "return_pct": -0.8134770040616525
+      },
+      {
+        "scenario": "Bull",
+        "probability": 0.25,
+        "revenue_year_n_usd": 5022117.450000002,
+        "ebit_year_n_usd": 1255529.3625000005,
+        "fcff_year_n_usd": 902097.8469562503,
+        "nol_balance_remaining_usd": 156484523.91811,
+        "revenue_quality_check": null,
+        "enterprise_value_usd": 12985912.282539144,
+        "equity_value_pre_dilution_usd": 36585912.282539144,
+        "equity_value_usd": 36585912.282539144,
+        "terminal_value_pct_of_ev": 0.8585854721704561,
+        "tv_dominance_flag": "TV_DOMINATED",
+        "physical_feasibility": {
+          "status": "NOT_APPLICABLE",
+          "reason": "business_model='not_applicable': sem teto físico fiável.",
+          "concentration_verdict": "SEVERE_CONCENTRATION_RISK",
+          "top_customer_revenue_pct": 0.9
+        },
+        "margin_credibility": {
+          "status": "NOT_COMPUTABLE"
+        },
+        "scenario_red_flags": [
+          "terminal_value_dominates_thesis"
+        ],
+        "return_multiple": 0.2750820472371364,
+        "return_pct": -0.7249179527628635
+      }
+    ],
+    "probability_weighted_valuation": {
+      "expected_equity_value_usd": 27394123.387573693,
+      "expected_return": -0.7940291474618519,
+      "scenario_results": [
+        {
+          "scenario": "Bear",
+          "probability": 0.3,
+          "revenue_year_n_usd": 56367.85000000002,
+          "ebit_year_n_usd": 2818.3925000000013,
+          "fcff_year_n_usd": 1485.0110082500007,
+          "nol_balance_remaining_usd": 159992108.51476753,
+          "revenue_quality_check": null,
+          "enterprise_value_usd": 14146.70009603072,
+          "equity_value_pre_dilution_usd": 68614146.70009603,
+          "equity_value_usd": 23614146.700096026,
+          "terminal_value_pct_of_ev": 0.7863084384150074,
+          "tv_dominance_flag": "OK",
+          "physical_feasibility": {
+            "status": "NOT_APPLICABLE",
+            "reason": "business_model='not_applicable': sem teto físico fiável.",
+            "concentration_verdict": "SEVERE_CONCENTRATION_RISK",
+            "top_customer_revenue_pct": 0.9
+          },
+          "margin_credibility": {
+            "status": "NOT_COMPUTABLE"
+          },
+          "scenario_red_flags": [],
+          "return_multiple": 0.17754997518869192,
+          "return_pct": -0.822450024811308
+        },
+        {
+          "scenario": "Base",
+          "probability": 0.45,
+          "revenue_year_n_usd": 1120000.0,
+          "ebit_year_n_usd": 168000.0,
+          "fcff_year_n_usd": 104613.6,
+          "nol_balance_remaining_usd": 159529600.82065982,
+          "revenue_quality_check": null,
+          "enterprise_value_usd": 1207558.4598002217,
+          "equity_value_pre_dilution_usd": 49807558.45980022,
+          "equity_value_usd": 24807558.45980022,
+          "terminal_value_pct_of_ev": 0.8236429485688567,
+          "tv_dominance_flag": "TV_DOMINATED",
+          "physical_feasibility": {
+            "status": "NOT_APPLICABLE",
+            "reason": "business_model='not_applicable': sem teto físico fiável.",
+            "concentration_verdict": "SEVERE_CONCENTRATION_RISK",
+            "top_customer_revenue_pct": 0.9
+          },
+          "margin_credibility": {
+            "status": "NOT_COMPUTABLE"
+          },
+          "scenario_red_flags": [
+            "terminal_value_dominates_thesis"
+          ],
+          "return_multiple": 0.18652299593834754,
+          "return_pct": -0.8134770040616525
+        },
+        {
+          "scenario": "Bull",
+          "probability": 0.25,
+          "revenue_year_n_usd": 5022117.450000002,
+          "ebit_year_n_usd": 1255529.3625000005,
+          "fcff_year_n_usd": 902097.8469562503,
+          "nol_balance_remaining_usd": 156484523.91811,
+          "revenue_quality_check": null,
+          "enterprise_value_usd": 12985912.282539144,
+          "equity_value_pre_dilution_usd": 36585912.282539144,
+          "equity_value_usd": 36585912.282539144,
+          "terminal_value_pct_of_ev": 0.8585854721704561,
+          "tv_dominance_flag": "TV_DOMINATED",
+          "physical_feasibility": {
+            "status": "NOT_APPLICABLE",
+            "reason": "business_model='not_applicable': sem teto físico fiável.",
+            "concentration_verdict": "SEVERE_CONCENTRATION_RISK",
+            "top_customer_revenue_pct": 0.9
+          },
+          "margin_credibility": {
+            "status": "NOT_COMPUTABLE"
+          },
+          "scenario_red_flags": [
+            "terminal_value_dominates_thesis"
+          ],
+          "return_multiple": 0.2750820472371364,
+          "return_pct": -0.7249179527628635
+        }
+      ]
+    },
+    "asymmetry": {
+      "asymmetry_ratio": 0.0,
+      "verdict": "WATCHLIST_OR_REJECT"
+    },
+    "red_flags": [
+      "insufficient_asymmetry"
+    ],
+    "verdict": "WATCHLIST / REJECT"
+  },
+  "debt_structure": null,
+  "portfolio_risk": null,
+  "case": {
+    "ticker": "POET",
+    "company_name": "POET Technologies Inc.",
+    "point_in_time": "2024-05-15",
+    "currency": "USD",
+    "case_type": "historical validation",
+    "notes": "Caso fab-light e quase pre-receita. A classificacao not_applicable impede um teto fisico artificial; a concentracao do maior cliente e tratada como risco estrutural severo.\n"
+  },
+  "sources": [
+    {
+      "field": "market_cap_usd",
+      "value": 133000000,
+      "source": "Calculated from approximately $2.20 share price and 60,485,477 shares outstanding",
+      "confidence": "medium",
+      "as_of": "2024-05-15"
+    },
+    {
+      "field": "cash_usd",
+      "value": 23600000,
+      "source": "POET Technologies Q1 2024 press release",
+      "confidence": "high",
+      "as_of": "2024-05-15"
+    },
+    {
+      "field": "current_revenue_usd",
+      "value": 35000,
+      "source": "POET Technologies Q1 2024 press release",
+      "confidence": "high",
+      "as_of": "2024-05-15"
+    },
+    {
+      "field": "nol_balance_usd",
+      "value": 160000000,
+      "source": "POET Technologies 6-K / SEC filing",
+      "confidence": "high",
+      "as_of": "2024-05-15"
+    },
+    {
+      "field": "top_customer_revenue_pct",
+      "value": 0.9,
+      "source": "Historical case assumption for customer concentration stress",
+      "confidence": "medium",
+      "as_of": "2024-05-15"
+    },
+    {
+      "field": "scenario_assumptions",
+      "value": "Heuristic analyst assumptions; not company guidance",
+      "source": "Analyst scenario design",
+      "confidence": "low",
+      "as_of": "2024-05-15"
+    }
+  ],
+  "validation": {
+    "validation_version": "VALIDATION-1.0.2",
+    "status": "PASS",
+    "schema_errors": [],
+    "financial_errors": [],
+    "economic_warnings": [
+      "Material input 'current_shares' has no source metadata.",
+      "Material input 'factory_proxy' has no source metadata.",
+      "Material input 'share_price_usd' has no source metadata.",
+      "Material input 'total_debt_usd' has no source metadata.",
+      "Material evidence 'scenario_assumptions' has low confidence and requires verification."
+    ],
+    "input_coverage": {
+      "material_fields_required": 8,
+      "material_fields_with_source": 4,
+      "material_fields_with_as_of": 4,
+      "material_fields_with_confidence": 4,
+      "coverage_pct": 50.0
+    }
+  },
+  "config_version": "CASE-CONFIG-4.2.0"
+}

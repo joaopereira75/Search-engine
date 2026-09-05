@@ -1,26 +1,5 @@
+# -*- coding: utf-8 -*-
 from __future__ import annotations
-
-"""
-Expectations Gap Engine — v4.0.2-core (FINAL, fundido e testado)
-====================================================================
-Ficheiro UNICO que funde todas as correcoes desta auditoria.
-Testado com 3 testes de regressao antes de ser entregue (todos passaram).
-
-9 fixes matematicos + 2 gates evidence-based:
-  [FIX 1] Diluicao fair-value: equity_atual = equity_pre - dilution_usd
-  [FIX 2] Curva-S fisica de ramp (substitui rampa sintetica de 1%)
-  [FIX 3] WACC dinamico (glide de risco de execucao -> risco de setor)
-  [FIX 4] FCFF sequencial com NOLs
-  [FIX 5] Limite legal de 80% na utilizacao anual de NOLs (IRC 172(a))
-  [FIX 6] Diagnostico de dominancia do Terminal Value
-  [FIX 7] Validacao fisica por cenario (nao so no Reverse DCF)
-  [FIX 8] Cross-check bottom-up da margem vs. unit economics
-  [FIX 9] estimate_scenario_funding_need() -- funding derivado do burn
-  [GATE A] business_model + NOT_APPLICABLE + concentration_risk_check
-           (caso AEHR Test Systems, 2023-11-30)
-  [GATE B] RevenueQualityGate integrado em value_scenario()
-           (caso Sivers Semiconductors, 2024-09-17)
-"""
 
 from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
@@ -35,10 +14,6 @@ try:
 except ImportError:  # pragma: no cover
     brentq = None
 
-
-# =============================================================================
-# Data structures
-# =============================================================================
 
 @dataclass(frozen=True)
 class FactoryData:
@@ -111,7 +86,7 @@ class FinancialInputs:
         if self.market_cap_usd <= 0:
             raise ValueError("market_cap_usd deve ser > 0.")
         if self.total_debt_usd < 0 or self.cash_usd < 0:
-            raise ValueError("Dí¶¶vida e cash devem ser >= 0.")
+            raise ValueError("Dívida e cash devem ser >= 0.")
         if self.current_revenue_usd < 0:
             raise ValueError("current_revenue_usd deve ser >= 0.")
         if self.nol_balance_usd < 0:
@@ -137,13 +112,13 @@ class ValuationAssumptions:
         if self.forecast_years < 1 or self.forecast_years > 30:
             raise ValueError("forecast_years deve estar entre 1 e 30.")
         if not (0 <= self.tax_rate < 1):
-            raise ValueError("tax_rate invá¶¶lido.")
+            raise ValueError("tax_rate inválido.")
         if not (-0.05 < self.terminal_growth < self.wacc):
             raise ValueError("terminal_growth deve ser >= -5% e inferior ao WACC.")
         if not (0 < self.target_ebit_margin < 1):
-            raise ValueError("target_ebit_margin invá¶¶lida.")
+            raise ValueError("target_ebit_margin inválida.")
         if not (0 <= self.reinvestment_rate <= 1):
-            raise ValueError("reinvestment_rate invá¶¶lido.")
+            raise ValueError("reinvestment_rate inválido.")
         if self.wacc_initial is not None and not (0 < self.wacc_initial < 1):
             raise ValueError("wacc_initial deve estar entre 0 e 1.")
         if self.wacc_terminal is not None and not (0 < self.wacc_terminal < 1):
@@ -168,25 +143,24 @@ class Scenario:
 
     def validate(self) -> None:
         if self.probability < 0:
-            raise ValueError(f"{self.name}: probability invá¶¶lida.")
+            raise ValueError(f"{self.name}: probability inválida.")
         if not (-0.99 < self.revenue_cagr < 10):
-            raise ValueError(f"{self.name}: revenue_cagr invá¶¶lido.")
+            raise ValueError(f"{self.name}: revenue_cagr inválido.")
         if not (0 < self.ebit_margin < 1):
-            raise ValueError(f"{self.name}: ebit_margin invá¶¶lido.")
+            raise ValueError(f"{self.name}: ebit_margin inválido.")
         if not (0 <= self.reinvestment_rate <= 1):
-            raise ValueError(f"{self.name}: reinvestment_rate invá¶¶lido.")
+            raise ValueError(f"{self.name}: reinvestment_rate inválido.")
         if self.exit_multiple <= 0:
             raise ValueError(f"{self.name}: exit_multiple deve ser > 0.")
         if self.dilution_usd < 0:
-            raise ValueError(f"{self.name}: dilution_usd invá¶¶lido.")
+            raise ValueError(f"{self.name}: dilution_usd inválido.")
 
 
 @dataclass(frozen=True)
 class BacklogItem:
-    """[GATE B] Um item de backlog com natureza contratual explá¶¶cita."""
     description: str
     amount_usd: float
-    contract_type: str  # "direct_po" | "nre_milestone" | "framework_calloff" | "product_committed"
+    contract_type: str
 
     RECOGNITION_DISCOUNT_DEFAULTS = {
         "direct_po": 0.80, "nre_milestone": 0.15,
@@ -197,7 +171,7 @@ class BacklogItem:
         if self.amount_usd < 0:
             raise ValueError(f"{self.description}: amount_usd deve ser >= 0.")
         if self.contract_type not in self.RECOGNITION_DISCOUNT_DEFAULTS:
-            raise ValueError(f"{self.description}: contract_type invá¶¶lido.")
+            raise ValueError(f"{self.description}: contract_type inválido.")
 
     def near_term_recognizable(self, discount_override: Optional[float] = None) -> float:
         discount = discount_override if discount_override is not None else self.RECOGNITION_DISCOUNT_DEFAULTS[self.contract_type]
@@ -206,7 +180,6 @@ class BacklogItem:
 
 @dataclass
 class RevenueQualityGate:
-    """[GATE B] Backlog anunciado -> receita efetiva pós-desconto contratual."""
     items: List[BacklogItem] = field(default_factory=list)
 
     def validate(self) -> None:
@@ -249,11 +222,14 @@ class EngineConfig:
     nol_utilization_cap_pct: float = 0.80
     terminal_value_dominance_warning_pct: float = 0.80
     margin_implausibility_threshold_pp: float = 0.10
+    # [FIX] Abaixo deste nível de receita atual (em USD), a empresa é tratada
+    # como pré-receita para efeitos de projeção: usa-se a curva-S física de
+    # ramp em vez de CAGR mecânico. O bug anterior usava "current_revenue > 0",
+    # o que permitia que qualquer receita simbólica (ex.: $35,000) acionasse
+    # CAGR composto ano-a-ano sem qualquer disciplina de ramp físico,
+    # produzindo trajetórias de receita irrealistas em cenários agressivos.
+    minimum_revenue_for_cagr_projection_usd: float = 1_000_000.0
 
-
-# =============================================================================
-# Engine
-# =============================================================================
 
 class ExpectationsGapEngine:
     VERSION = "EGE-4.0.2-final"
@@ -272,8 +248,29 @@ class ExpectationsGapEngine:
             s.validate()
 
         self.diagnostics: Dict[str, Any] = {"engine_version": self.VERSION, "warnings": [], "errors": []}
-        if self.financials.current_revenue_usd <= 0:
-            warnings.warn("current_revenue_usd nã¶¶o fornecida; usar-se-á¶¶ curva-S fá­­sica de ramp.", RuntimeWarning)
+        if not self._uses_cagr_projection():
+            warnings.warn(
+                "current_revenue_usd está abaixo do limiar de projeção por CAGR "
+                f"(config.minimum_revenue_for_cagr_projection_usd={self.config.minimum_revenue_for_cagr_projection_usd:,.0f}); "
+                "usar-se-á curva-S física de ramp.",
+                RuntimeWarning,
+            )
+
+    def _uses_cagr_projection(self) -> bool:
+        """[FIX] Decide CAGR mecânico vs. curva-S de ramp.
+
+        Antes: `current_revenue_usd > 0` — qualquer receita simbólica (ex.:
+        $35,000 numa empresa quase pré-receita) já ativava CAGR composto
+        ano-a-ano sem qualquer disciplina física, produzindo trajetórias de
+        receita irrealistas em cenários agressivos (ver caso POET).
+
+        Agora: exige-se um piso absoluto configurável
+        (`EngineConfig.minimum_revenue_for_cagr_projection_usd`, default
+        $1,000,000) antes de se confiar em CAGR mecânico. Abaixo disso,
+        usa-se sempre a curva-S de ramp, calibrada para terminar exatamente
+        na receita-alvo do cenário no último ano do horizonte.
+        """
+        return self.financials.current_revenue_usd > self.config.minimum_revenue_for_cagr_projection_usd
 
     @property
     def enterprise_value_usd(self) -> float:
@@ -357,7 +354,7 @@ class ExpectationsGapEngine:
         if self.factory.business_model != "fab":
             result = {
                 "status": "NOT_APPLICABLE",
-                "reason": f"business_model='{self.factory.business_model}': sem teto fá­­sico fiá¶¶vel.",
+                "reason": f"business_model='{self.factory.business_model}': sem teto físico fiável.",
             }
             if self.factory.top_customer_revenue_pct is not None:
                 pct = self.factory.top_customer_revenue_pct
@@ -417,8 +414,9 @@ class ExpectationsGapEngine:
         years = self.valuation.forecast_years
         current_revenue = self.financials.current_revenue_usd
         revenue_year_n_target = max(current_revenue, 1.0) * ((1.0 + scenario.revenue_cagr) ** years)
+        uses_cagr = self._uses_cagr_projection()
         revenue_path = self._build_revenue_path(years, revenue_year_n=revenue_year_n_target,
-                                                   cagr=scenario.revenue_cagr if current_revenue > 0 else None)
+                                                   cagr=scenario.revenue_cagr if uses_cagr else None)
         fcff_path, _, _ = self._fcff_path_with_nol(revenue_path, scenario.ebit_margin, scenario.reinvestment_rate)
         cumulative_burn = -sum(f for f in fcff_path if f < 0)
         survival = self.survival_and_dilution(
@@ -447,8 +445,9 @@ class ExpectationsGapEngine:
                 revenue_year_n_target = max(1.0, revenue_year_n_target - backlog_gap)
                 revenue_quality_check["revenue_target_adjustment_usd"] = float(-backlog_gap)
 
+        uses_cagr = self._uses_cagr_projection()
         revenue_path = self._build_revenue_path(years, revenue_year_n=revenue_year_n_target,
-                                                   cagr=scenario.revenue_cagr if current_revenue > 0 else None)
+                                                   cagr=scenario.revenue_cagr if uses_cagr else None)
         fcff_path, ebit_path, nol_remaining = self._fcff_path_with_nol(revenue_path, scenario.ebit_margin, scenario.reinvestment_rate)
         discount_factors = self._cumulative_discount_factors(years)
         pv_explicit = float(np.sum(np.array(fcff_path) / discount_factors))
@@ -541,29 +540,3 @@ def run_expectations_gap_analysis(*, financials, factory, valuation, scenarios=N
     engine = ExpectationsGapEngine(financials=financials, factory=factory, valuation=valuation,
                                      scenarios=scenarios, config=config)
     return engine.run(revenue_quality_gates=revenue_quality_gates)
-
-
-if __name__ == "__main__":
-    financials = FinancialInputs(market_cap_usd=500_000_000, total_debt_usd=50_000_000, cash_usd=40_000_000,
-                                   current_revenue_usd=100_000_000, current_shares=120_000_000, nol_balance_usd=85_000_000)
-    factory = FactoryData(capacity_max_units=2_000_000, current_capacity_units=1_200_000, current_utilization=0.80,
-                            yield_rate=0.90, asp_usd=250.0, expansion_capacity_units=800_000,
-                            expansion_lead_time_years=1.0, ramp_years=1.0, qualification_lead_time_years=0.5,
-                            variable_cost_per_unit=150.0)
-    valuation = ValuationAssumptions(wacc=0.12, wacc_initial=0.20, wacc_terminal=0.10, forecast_years=5,
-                                       tax_rate=0.21, terminal_growth=0.02, target_ebit_margin=0.20, reinvestment_rate=0.25)
-    scenarios = [
-        Scenario(name="Death / Severe Delay", probability=0.20, revenue_cagr=-0.10, ebit_margin=0.03,
-                  reinvestment_rate=0.50, exit_multiple=6.0, dilution_usd=150_000_000),
-        Scenario(name="Delayed Ramp", probability=0.25, revenue_cagr=0.05, ebit_margin=0.10,
-                  reinvestment_rate=0.40, exit_multiple=9.0, dilution_usd=80_000_000),
-        Scenario(name="Base Inflection", probability=0.35, revenue_cagr=0.25, ebit_margin=0.18,
-                  reinvestment_rate=0.30, exit_multiple=13.0, dilution_usd=40_000_000),
-        Scenario(name="Strong Re-rating", probability=0.15, revenue_cagr=0.40, ebit_margin=0.25,
-                  reinvestment_rate=0.20, exit_multiple=18.0),
-        Scenario(name="Full Bottleneck", probability=0.05, revenue_cagr=0.60, ebit_margin=0.30,
-                  reinvestment_rate=0.15, exit_multiple=22.0),
-    ]
-    result = run_expectations_gap_analysis(financials=financials, factory=factory, valuation=valuation, scenarios=scenarios)
-    print("Verdict:", result["verdict"])
-    print("Asymmetry ratio:", result["asymmetry"]["asymmetry_ratio"])

@@ -1,0 +1,331 @@
+{
+  "runner_version": "CASE-RUNNER-4.2.0",
+  "decision": "WATCHLIST / REJECT",
+  "base_scenario": "Base",
+  "hard_vetoes": [],
+  "red_flags": [
+    "Bear: NRE-dominated backlog",
+    "Base: NRE-dominated backlog",
+    "Bull: NRE-dominated backlog",
+    "backlog_quality_concern",
+    "insufficient_asymmetry"
+  ],
+  "watch_items": [
+    "Base: terminal value dominates scenario valuation",
+    "Bull: terminal value dominates scenario valuation"
+  ],
+  "valuation": {
+    "engine_version": "EGE-4.0.2-final",
+    "status": "OK",
+    "market": {
+      "market_cap_usd": 1070091900,
+      "enterprise_value_usd": 1042091900
+    },
+    "scenario_valuation": [
+      {
+        "scenario": "Bear",
+        "probability": 0.3,
+        "revenue_year_n_usd": 186118302.67781246,
+        "ebit_year_n_usd": 7444732.107112498,
+        "fcff_year_n_usd": 3234736.10054038,
+        "nol_balance_remaining_usd": 0.0,
+        "revenue_quality_check": {
+          "gross_backlog_usd": 101400000.0,
+          "effective_backlog_usd": 22495000.0,
+          "implied_discount_pct": 0.7781558185404339,
+          "verdict": "NRE_DOMINATED_BACKLOG",
+          "revenue_target_adjustment_usd": -78905000.0
+        },
+        "enterprise_value_usd": 34884790.900174245,
+        "equity_value_pre_dilution_usd": 162884790.90017426,
+        "equity_value_usd": 62884790.90017426,
+        "terminal_value_pct_of_ev": 0.6762040472647175,
+        "tv_dominance_flag": "OK",
+        "physical_feasibility": {
+          "status": "NOT_APPLICABLE",
+          "reason": "business_model='not_applicable': sem teto físico fiável."
+        },
+        "margin_credibility": {
+          "status": "NOT_COMPUTABLE"
+        },
+        "scenario_red_flags": [
+          "backlog_is_nre_dominated_not_committed_revenue"
+        ],
+        "return_multiple": 0.05876578535000056,
+        "return_pct": -0.9412342146499995
+      },
+      {
+        "scenario": "Base",
+        "probability": 0.45,
+        "revenue_year_n_usd": 550276661.0008607,
+        "ebit_year_n_usd": 66033199.32010328,
+        "fcff_year_n_usd": 33908047.85087304,
+        "nol_balance_remaining_usd": 0.0,
+        "revenue_quality_check": {
+          "gross_backlog_usd": 101400000.0,
+          "effective_backlog_usd": 22495000.0,
+          "implied_discount_pct": 0.7781558185404339,
+          "verdict": "NRE_DOMINATED_BACKLOG",
+          "revenue_target_adjustment_usd": -78905000.0
+        },
+        "enterprise_value_usd": 372560238.80032104,
+        "equity_value_pre_dilution_usd": 450560238.80032104,
+        "equity_value_usd": 400560238.80032104,
+        "terminal_value_pct_of_ev": 0.802292276687045,
+        "tv_dominance_flag": "TV_DOMINATED",
+        "physical_feasibility": {
+          "status": "NOT_APPLICABLE",
+          "reason": "business_model='not_applicable': sem teto físico fiável."
+        },
+        "margin_credibility": {
+          "status": "NOT_COMPUTABLE"
+        },
+        "scenario_red_flags": [
+          "terminal_value_dominates_thesis",
+          "backlog_is_nre_dominated_not_committed_revenue"
+        ],
+        "return_multiple": 0.3743232135485943,
+        "return_pct": -0.6256767864514057
+      },
+      {
+        "scenario": "Bull",
+        "probability": 0.25,
+        "revenue_year_n_usd": 1078549046.755313,
+        "ebit_year_n_usd": 215709809.3510626,
+        "fcff_year_n_usd": 127808062.04050457,
+        "nol_balance_remaining_usd": 0.0,
+        "revenue_quality_check": {
+          "gross_backlog_usd": 101400000.0,
+          "effective_backlog_usd": 22495000.0,
+          "implied_discount_pct": 0.7781558185404339,
+          "verdict": "NRE_DOMINATED_BACKLOG",
+          "revenue_target_adjustment_usd": -78905000.0
+        },
+        "enterprise_value_usd": 1681446155.0113807,
+        "equity_value_pre_dilution_usd": 1709446155.0113807,
+        "equity_value_usd": 1709446155.0113807,
+        "terminal_value_pct_of_ev": 0.8710537703264177,
+        "tv_dominance_flag": "TV_DOMINATED",
+        "physical_feasibility": {
+          "status": "NOT_APPLICABLE",
+          "reason": "business_model='not_applicable': sem teto físico fiável."
+        },
+        "margin_credibility": {
+          "status": "NOT_COMPUTABLE"
+        },
+        "scenario_red_flags": [
+          "terminal_value_dominates_thesis",
+          "backlog_is_nre_dominated_not_committed_revenue"
+        ],
+        "return_multiple": 1.5974760252006213,
+        "return_pct": 0.5974760252006213
+      }
+    ],
+    "probability_weighted_valuation": {
+      "expected_equity_value_usd": 626479083.4830419,
+      "expected_return": -0.4145558119979771,
+      "scenario_results": [
+        {
+          "scenario": "Bear",
+          "probability": 0.3,
+          "revenue_year_n_usd": 186118302.67781246,
+          "ebit_year_n_usd": 7444732.107112498,
+          "fcff_year_n_usd": 3234736.10054038,
+          "nol_balance_remaining_usd": 0.0,
+          "revenue_quality_check": {
+            "gross_backlog_usd": 101400000.0,
+            "effective_backlog_usd": 22495000.0,
+            "implied_discount_pct": 0.7781558185404339,
+            "verdict": "NRE_DOMINATED_BACKLOG",
+            "revenue_target_adjustment_usd": -78905000.0
+          },
+          "enterprise_value_usd": 34884790.900174245,
+          "equity_value_pre_dilution_usd": 162884790.90017426,
+          "equity_value_usd": 62884790.90017426,
+          "terminal_value_pct_of_ev": 0.6762040472647175,
+          "tv_dominance_flag": "OK",
+          "physical_feasibility": {
+            "status": "NOT_APPLICABLE",
+            "reason": "business_model='not_applicable': sem teto físico fiável."
+          },
+          "margin_credibility": {
+            "status": "NOT_COMPUTABLE"
+          },
+          "scenario_red_flags": [
+            "backlog_is_nre_dominated_not_committed_revenue"
+          ],
+          "return_multiple": 0.05876578535000056,
+          "return_pct": -0.9412342146499995
+        },
+        {
+          "scenario": "Base",
+          "probability": 0.45,
+          "revenue_year_n_usd": 550276661.0008607,
+          "ebit_year_n_usd": 66033199.32010328,
+          "fcff_year_n_usd": 33908047.85087304,
+          "nol_balance_remaining_usd": 0.0,
+          "revenue_quality_check": {
+            "gross_backlog_usd": 101400000.0,
+            "effective_backlog_usd": 22495000.0,
+            "implied_discount_pct": 0.7781558185404339,
+            "verdict": "NRE_DOMINATED_BACKLOG",
+            "revenue_target_adjustment_usd": -78905000.0
+          },
+          "enterprise_value_usd": 372560238.80032104,
+          "equity_value_pre_dilution_usd": 450560238.80032104,
+          "equity_value_usd": 400560238.80032104,
+          "terminal_value_pct_of_ev": 0.802292276687045,
+          "tv_dominance_flag": "TV_DOMINATED",
+          "physical_feasibility": {
+            "status": "NOT_APPLICABLE",
+            "reason": "business_model='not_applicable': sem teto físico fiável."
+          },
+          "margin_credibility": {
+            "status": "NOT_COMPUTABLE"
+          },
+          "scenario_red_flags": [
+            "terminal_value_dominates_thesis",
+            "backlog_is_nre_dominated_not_committed_revenue"
+          ],
+          "return_multiple": 0.3743232135485943,
+          "return_pct": -0.6256767864514057
+        },
+        {
+          "scenario": "Bull",
+          "probability": 0.25,
+          "revenue_year_n_usd": 1078549046.755313,
+          "ebit_year_n_usd": 215709809.3510626,
+          "fcff_year_n_usd": 127808062.04050457,
+          "nol_balance_remaining_usd": 0.0,
+          "revenue_quality_check": {
+            "gross_backlog_usd": 101400000.0,
+            "effective_backlog_usd": 22495000.0,
+            "implied_discount_pct": 0.7781558185404339,
+            "verdict": "NRE_DOMINATED_BACKLOG",
+            "revenue_target_adjustment_usd": -78905000.0
+          },
+          "enterprise_value_usd": 1681446155.0113807,
+          "equity_value_pre_dilution_usd": 1709446155.0113807,
+          "equity_value_usd": 1709446155.0113807,
+          "terminal_value_pct_of_ev": 0.8710537703264177,
+          "tv_dominance_flag": "TV_DOMINATED",
+          "physical_feasibility": {
+            "status": "NOT_APPLICABLE",
+            "reason": "business_model='not_applicable': sem teto físico fiável."
+          },
+          "margin_credibility": {
+            "status": "NOT_COMPUTABLE"
+          },
+          "scenario_red_flags": [
+            "terminal_value_dominates_thesis",
+            "backlog_is_nre_dominated_not_committed_revenue"
+          ],
+          "return_multiple": 1.5974760252006213,
+          "return_pct": 0.5974760252006213
+        }
+      ]
+    },
+    "asymmetry": {
+      "asymmetry_ratio": 0.2648739715888649,
+      "verdict": "WATCHLIST_OR_REJECT"
+    },
+    "red_flags": [
+      "backlog_quality_concern",
+      "insufficient_asymmetry"
+    ],
+    "verdict": "WATCHLIST / REJECT"
+  },
+  "debt_structure": null,
+  "portfolio_risk": null,
+  "case": {
+    "ticker": "SIVE.ST",
+    "company_name": "Sivers Semiconductors AB",
+    "point_in_time": "2024-09-17",
+    "currency": "SEK",
+    "case_type": "historical validation",
+    "notes": "Caso para validar qualidade de backlog. O backlog anunciado de SEK 101,4M contém PO direta, NRE e framework call-off. A lógica deve reconhecer apenas SEK 22,495M no curto prazo e classificar o conjunto como NRE_DOMINATED_BACKLOG.\n"
+  },
+  "sources": [
+    {
+      "field": "share_price_usd",
+      "value": 4.536,
+      "source": "Board communication concerning CEO share issue",
+      "confidence": "high",
+      "as_of": "2024-09-17"
+    },
+    {
+      "field": "current_shares",
+      "value": 235884460,
+      "source": "Reconstructed share count",
+      "confidence": "high",
+      "as_of": "2024-09-17"
+    },
+    {
+      "field": "market_cap_usd",
+      "value": 1070091900,
+      "source": "Calculated: SEK 4.536 multiplied by 235,884,460 shares",
+      "confidence": "high",
+      "as_of": "2024-09-17"
+    },
+    {
+      "field": "cash_usd",
+      "value": 78000000,
+      "source": "Sivers Q1 2024 report: cash plus credit facilities",
+      "confidence": "high",
+      "as_of": "2024-09-17"
+    },
+    {
+      "field": "total_debt_usd",
+      "value": 50000000,
+      "source": "Formue Nord financing announced March 2024",
+      "confidence": "high",
+      "as_of": "2024-09-17"
+    },
+    {
+      "field": "current_revenue_usd",
+      "value": 240531000,
+      "source": "Reconstructed LTM revenue",
+      "confidence": "high",
+      "as_of": "2024-09-17"
+    },
+    {
+      "field": "current_ebitda_usd",
+      "value": -22377000,
+      "source": "Reconstructed LTM EBITDA",
+      "confidence": "high",
+      "as_of": "2024-09-17"
+    },
+    {
+      "field": "revenue_quality_gates",
+      "value": "SEK 101.4M gross backlog; SEK 22.495M effective near-term revenue",
+      "source": "Four announced agreements decomposed by contractual nature",
+      "confidence": "high",
+      "as_of": "2024-09-17"
+    },
+    {
+      "field": "scenario_assumptions",
+      "value": "Heuristic analyst assumptions; not company guidance",
+      "source": "Analyst scenario design",
+      "confidence": "low",
+      "as_of": "2024-09-17"
+    }
+  ],
+  "validation": {
+    "validation_version": "VALIDATION-1.0.2",
+    "status": "PASS",
+    "schema_errors": [],
+    "financial_errors": [],
+    "economic_warnings": [
+      "Material input 'factory_proxy' has no source metadata.",
+      "Material evidence 'scenario_assumptions' has low confidence and requires verification."
+    ],
+    "input_coverage": {
+      "material_fields_required": 8,
+      "material_fields_with_source": 7,
+      "material_fields_with_as_of": 7,
+      "material_fields_with_confidence": 7,
+      "coverage_pct": 87.5
+    }
+  },
+  "config_version": "CASE-CONFIG-4.2.0"
+}
