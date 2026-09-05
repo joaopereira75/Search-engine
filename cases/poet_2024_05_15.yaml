@@ -1,0 +1,129 @@
+case:
+  ticker: POET
+  company_name: POET Technologies Inc.
+  point_in_time: "2024-05-15"
+  currency: USD
+  case_type: "historical validation"
+  notes: >
+    Caso fab-light e quase pre-receita. A classificacao not_applicable
+    impede um teto fisico artificial; a concentracao do maior cliente
+    e tratada como risco estrutural severo.
+
+financials:
+  market_cap_usd: 133000000
+  total_debt_usd: 0
+  cash_usd: 23600000
+  current_revenue_usd: 35000
+  current_ebitda_usd: null
+  current_invested_capital_usd: null
+  current_shares: 60485477
+  share_price_usd: 2.20
+  nol_balance_usd: 160000000
+
+factory:
+  capacity_max_units: 0
+  current_capacity_units: 0
+  current_utilization: 0.80
+  yield_rate: 0.90
+  asp_usd: 0
+  expansion_capacity_units: 0
+  expansion_lead_time_years: 1.0
+  qualification_lead_time_years: 0.5
+  ramp_years: 1.0
+  maintenance_capex_per_unit: 0
+  variable_cost_per_unit: null
+  incremental_capex_usd: 0
+  business_model: not_applicable
+  top_customer_revenue_pct: 0.90
+
+valuation:
+  wacc: 0.15
+  wacc_initial: 0.20
+  wacc_terminal: 0.12
+  wacc_glide_years: 5
+  forecast_years: 5
+  tax_rate: 0.21
+  terminal_growth: 0.02
+  target_ebit_margin: 0.20
+  revenue_to_invested_capital: 1.5
+  reinvestment_rate: 0.30
+
+engine_config:
+  physical_feasibility_tolerance: 0.05
+  severe_implied_revenue_gap: 0.25
+  dilution_warning_pct: 0.15
+  dilution_reject_pct: 0.50
+  core_asymmetry_threshold: 2.5
+  pilot_asymmetry_threshold: 1.5
+  ramp_curve_steepness_factor: 6.0
+  nol_utilization_cap_pct: 0.80
+  terminal_value_dominance_warning_pct: 0.80
+  margin_implausibility_threshold_pp: 0.10
+
+scenarios:
+  - name: Bear
+    probability: 0.30
+    revenue_cagr: 0.10
+    ebit_margin: 0.05
+    reinvestment_rate: 0.45
+    exit_multiple: 8.0
+    incremental_capex_usd: 0
+    additional_debt_usd: 0
+    dilution_usd: 45000000
+
+  - name: Base
+    probability: 0.45
+    revenue_cagr: 1.00
+    ebit_margin: 0.15
+    reinvestment_rate: 0.35
+    exit_multiple: 12.0
+    incremental_capex_usd: 0
+    additional_debt_usd: 0
+    dilution_usd: 25000000
+
+  - name: Bull
+    probability: 0.25
+    revenue_cagr: 1.70
+    ebit_margin: 0.25
+    reinvestment_rate: 0.25
+    exit_multiple: 18.0
+    incremental_capex_usd: 0
+    additional_debt_usd: 0
+    dilution_usd: 0
+
+sources:
+  - field: market_cap_usd
+    value: 133000000
+    source: "Calculated from approximately $2.20 share price and 60,485,477 shares outstanding"
+    confidence: medium
+    as_of: "2024-05-15"
+
+  - field: cash_usd
+    value: 23600000
+    source: "POET Technologies Q1 2024 press release"
+    confidence: high
+    as_of: "2024-05-15"
+
+  - field: current_revenue_usd
+    value: 35000
+    source: "POET Technologies Q1 2024 press release"
+    confidence: high
+    as_of: "2024-05-15"
+
+  - field: nol_balance_usd
+    value: 160000000
+    source: "POET Technologies 6-K / SEC filing"
+    confidence: high
+    as_of: "2024-05-15"
+
+  - field: top_customer_revenue_pct
+    value: 0.90
+    source: "Historical case assumption for customer concentration stress"
+    confidence: medium
+    as_of: "2024-05-15"
+
+  - field: scenario_assumptions
+    value: "Heuristic analyst assumptions; not company guidance"
+    source: "Analyst scenario design"
+    confidence: low
+    as_of: "2024-05-15"

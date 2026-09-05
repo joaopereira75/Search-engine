@@ -1,0 +1,35 @@
+Metadata-Version: 2.4
+Name: asymmetry-engine
+Version: 4.1.0
+Summary: Scenario valuation, capital-structure and liquidity research toolkit
+Author: Local research user
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Financial and Insurance Industry
+Classifier: License :: Other/Proprietary License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: numpy>=1.24
+Provides-Extra: valuation
+Requires-Dist: pandas>=2.0; extra == "valuation"
+Requires-Dist: scipy>=1.10; extra == "valuation"
+Provides-Extra: market-data
+Requires-Dist: pandas>=2.0; extra == "market-data"
+Requires-Dist: scipy>=1.10; extra == "market-data"
+Requires-Dist: yfinance>=0.2.40; extra == "market-data"
+Requires-Dist: arch>=6.3; extra == "market-data"
+Provides-Extra: yaml
+Requires-Dist: PyYAML>=6.0; extra == "yaml"
+Provides-Extra: test
+Requires-Dist: pytest>=7.4; extra == "test"
+Provides-Extra: all
+Requires-Dist: pandas>=2.0; extra == "all"
+Requires-Dist: scipy>=1.10; extra == "all"
+Requires-Dist: yfinance>=0.2.40; extra == "all"
+Requires-Dist: arch>=6.3; extra == "all"
+Requires-Dist: PyYAML>=6.0; extra == "all"
+Requires-Dist: pytest>=7.4; extra == "all"

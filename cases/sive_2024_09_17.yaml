@@ -1,0 +1,191 @@
+case:
+  ticker: SIVE.ST
+  company_name: Sivers Semiconductors AB
+  point_in_time: "2024-09-17"
+  currency: SEK
+  case_type: "historical validation"
+  notes: >
+    Caso para validar qualidade de backlog. O backlog anunciado de SEK 101,4M
+    contém PO direta, NRE e framework call-off. A lógica deve reconhecer
+    apenas SEK 22,495M no curto prazo e classificar o conjunto como
+    NRE_DOMINATED_BACKLOG.
+
+financials:
+  market_cap_usd: 1070091900
+  total_debt_usd: 50000000
+  cash_usd: 78000000
+  current_revenue_usd: 240531000
+  current_ebitda_usd: -22377000
+  current_invested_capital_usd: null
+  current_shares: 235884460
+  share_price_usd: 4.536
+  nol_balance_usd: 0
+
+factory:
+  capacity_max_units: 0
+  current_capacity_units: 0
+  current_utilization: 0.80
+  yield_rate: 0.90
+  asp_usd: 0
+  expansion_capacity_units: 0
+  expansion_lead_time_years: 1.0
+  qualification_lead_time_years: 0.5
+  ramp_years: 1.0
+  maintenance_capex_per_unit: 0
+  variable_cost_per_unit: null
+  incremental_capex_usd: 0
+  business_model: not_applicable
+  top_customer_revenue_pct: null
+
+valuation:
+  wacc: 0.16
+  wacc_initial: 0.22
+  wacc_terminal: 0.14
+  wacc_glide_years: 5
+  forecast_years: 5
+  tax_rate: 0.21
+  terminal_growth: 0.02
+  target_ebit_margin: 0.18
+  revenue_to_invested_capital: 1.5
+  reinvestment_rate: 0.35
+
+engine_config:
+  physical_feasibility_tolerance: 0.05
+  severe_implied_revenue_gap: 0.25
+  dilution_warning_pct: 0.15
+  dilution_reject_pct: 0.50
+  core_asymmetry_threshold: 2.5
+  pilot_asymmetry_threshold: 1.5
+  ramp_curve_steepness_factor: 6.0
+  nol_utilization_cap_pct: 0.80
+  terminal_value_dominance_warning_pct: 0.80
+  margin_implausibility_threshold_pp: 0.10
+
+scenarios:
+  - name: Bear
+    probability: 0.30
+    revenue_cagr: -0.05
+    ebit_margin: 0.04
+    reinvestment_rate: 0.45
+    exit_multiple: 7.0
+    incremental_capex_usd: 0
+    additional_debt_usd: 0
+    dilution_usd: 100000000
+
+  - name: Base
+    probability: 0.45
+    revenue_cagr: 0.18
+    ebit_margin: 0.12
+    reinvestment_rate: 0.35
+    exit_multiple: 10.0
+    incremental_capex_usd: 0
+    additional_debt_usd: 0
+    dilution_usd: 50000000
+
+  - name: Bull
+    probability: 0.25
+    revenue_cagr: 0.35
+    ebit_margin: 0.20
+    reinvestment_rate: 0.25
+    exit_multiple: 15.0
+    incremental_capex_usd: 0
+    additional_debt_usd: 0
+    dilution_usd: 0
+
+revenue_quality_gates:
+  Bear:
+    - description: "Direct purchase order"
+      amount_usd: 8900000
+      contract_type: direct_po
+    - description: "NRE milestones"
+      amount_usd: 13500000
+      contract_type: nre_milestone
+    - description: "Framework agreement, subject to call-offs"
+      amount_usd: 30000000
+      contract_type: framework_calloff
+    - description: "NRE program expansion"
+      amount_usd: 49000000
+      contract_type: nre_milestone
+
+  Base:
+    - description: "Direct purchase order"
+      amount_usd: 8900000
+      contract_type: direct_po
+    - description: "NRE milestones"
+      amount_usd: 13500000
+      contract_type: nre_milestone
+    - description: "Framework agreement, subject to call-offs"
+      amount_usd: 30000000
+      contract_type: framework_calloff
+    - description: "NRE program expansion"
+      amount_usd: 49000000
+      contract_type: nre_milestone
+
+  Bull:
+    - description: "Direct purchase order"
+      amount_usd: 8900000
+      contract_type: direct_po
+    - description: "NRE milestones"
+      amount_usd: 13500000
+      contract_type: nre_milestone
+    - description: "Framework agreement, subject to call-offs"
+      amount_usd: 30000000
+      contract_type: framework_calloff
+    - description: "NRE program expansion"
+      amount_usd: 49000000
+      contract_type: nre_milestone
+
+sources:
+  - field: share_price_usd
+    value: 4.536
+    source: "Board communication concerning CEO share issue"
+    confidence: high
+    as_of: "2024-09-17"
+
+  - field: current_shares
+    value: 235884460
+    source: "Reconstructed share count"
+    confidence: high
+    as_of: "2024-09-17"
+
+  - field: market_cap_usd
+    value: 1070091900
+    source: "Calculated: SEK 4.536 multiplied by 235,884,460 shares"
+    confidence: high
+    as_of: "2024-09-17"
+
+  - field: cash_usd
+    value: 78000000
+    source: "Sivers Q1 2024 report: cash plus credit facilities"
+    confidence: high
+    as_of: "2024-09-17"
+
+  - field: total_debt_usd
+    value: 50000000
+    source: "Formue Nord financing announced March 2024"
+    confidence: high
+    as_of: "2024-09-17"
+
+  - field: current_revenue_usd
+    value: 240531000
+    source: "Reconstructed LTM revenue"
+    confidence: high
+    as_of: "2024-09-17"
+
+  - field: current_ebitda_usd
+    value: -22377000
+    source: "Reconstructed LTM EBITDA"
+    confidence: high
+    as_of: "2024-09-17"
+
+  - field: revenue_quality_gates
+    value: "SEK 101.4M gross backlog; SEK 22.495M effective near-term revenue"
+    source: "Four announced agreements decomposed by contractual nature"
+    confidence: high
+    as_of: "2024-09-17"
+
+  - field: scenario_assumptions
+    value: "Heuristic analyst assumptions; not company guidance"
+    source: "Analyst scenario design"
+    confidence: low
+    as_of: "2024-09-17"

@@ -1,0 +1,179 @@
+case:
+  ticker: WOLF
+  company_name: Wolfspeed, Inc.
+  point_in_time: "2023-08-23"
+  currency: USD
+  case_type: "historical validation"
+  notes: >
+    Caso de capacidade industrial e risco de estrutura de capital. O objetivo
+    principal é testar que FCF negativo depleta o cash projetado e que uma
+    maturity wall não coberta produz CAPITAL_STRUCTURE_CRISIS_RISK. A unidade
+    de capacidade é uma proxy económica de receita de wafers/dispositivos.
+    ASP de 5 USD produz um teto de receita de 1,8B USD: suficiente para o
+    cenário Base (cerca de 1,624B USD no ano 5), mas não para o cenário Bull
+    (cerca de 3,62B USD), que deve continuar fisicamente unsupported. Termos
+    dos convertíveis são aproximações históricas e devem ser confirmados no
+    filing original antes de uso de investimento real.
+
+financials:
+  market_cap_usd: 5503700000
+  total_debt_usd: 4175100000
+  cash_usd: 2954900000
+  current_revenue_usd: 807200000
+  current_ebitda_usd: null
+  current_invested_capital_usd: null
+  current_shares: 124794000
+  share_price_usd: 44.10
+  nol_balance_usd: 0
+
+factory:
+  capacity_max_units: 2000000000
+  current_capacity_units: 2000000000
+  current_utilization: 0.20
+  yield_rate: 0.90
+  asp_usd: 5.0
+  expansion_capacity_units: 0
+  expansion_lead_time_years: 1.0
+  qualification_lead_time_years: 0.5
+  ramp_years: 1.0
+  maintenance_capex_per_unit: 0
+  variable_cost_per_unit: null
+  incremental_capex_usd: 0
+  business_model: fab
+  top_customer_revenue_pct: null
+
+valuation:
+  wacc: 0.14
+  wacc_initial: 0.18
+  wacc_terminal: 0.12
+  wacc_glide_years: 5
+  forecast_years: 5
+  tax_rate: 0.21
+  terminal_growth: 0.02
+  target_ebit_margin: 0.18
+  revenue_to_invested_capital: 1.5
+  reinvestment_rate: 0.35
+
+engine_config:
+  physical_feasibility_tolerance: 0.05
+  severe_implied_revenue_gap: 0.25
+  dilution_warning_pct: 0.15
+  dilution_reject_pct: 0.50
+  core_asymmetry_threshold: 2.5
+  pilot_asymmetry_threshold: 1.5
+  ramp_curve_steepness_factor: 6.0
+  nol_utilization_cap_pct: 0.80
+  terminal_value_dominance_warning_pct: 0.80
+  margin_implausibility_threshold_pp: 0.10
+
+scenarios:
+  - name: Bear
+    probability: 0.35
+    revenue_cagr: -0.15
+    ebit_margin: 0.04
+    reinvestment_rate: 0.50
+    exit_multiple: 6.0
+    incremental_capex_usd: 0
+    additional_debt_usd: 0
+    dilution_usd: 1500000000
+
+  - name: Base
+    probability: 0.45
+    revenue_cagr: 0.15
+    ebit_margin: 0.12
+    reinvestment_rate: 0.40
+    exit_multiple: 9.0
+    incremental_capex_usd: 0
+    additional_debt_usd: 0
+    dilution_usd: 750000000
+
+  - name: Bull
+    probability: 0.20
+    revenue_cagr: 0.35
+    ebit_margin: 0.22
+    reinvestment_rate: 0.30
+    exit_multiple: 14.0
+    incremental_capex_usd: 0
+    additional_debt_usd: 0
+    dilution_usd: 0
+
+debt_structure:
+  straight_debt_usd: 1149500000
+  instruments:
+    - principal_usd: 1750000000
+      conversion_price_usd: 100.0
+      maturity_date: "2029-12-01"
+      coupon_rate: 0.01875
+
+    - principal_usd: 1275600000
+      conversion_price_usd: 63.0
+      maturity_date: "2026-06-01"
+      coupon_rate: 0.0175
+
+debt_context:
+  current_price_usd: 44.10
+  current_date: "2023-08-23"
+  cash_usd: 2954900000
+  annual_fcf_usd: -1820000000
+  forecast_years: 5
+
+sources:
+  - field: share_price_usd
+    value: 44.10
+    source: "Historical market close around FY2023 Q4 earnings release"
+    confidence: high
+    as_of: "2023-08-23"
+
+  - field: current_shares
+    value: 124794000
+    source: "Wolfspeed FY2023 10-K"
+    confidence: high
+    as_of: "2023-08-23"
+
+  - field: market_cap_usd
+    value: 5503700000
+    source: "Calculated from share price and shares outstanding"
+    confidence: medium
+    as_of: "2023-08-23"
+
+  - field: cash_usd
+    value: 2954900000
+    source: "Wolfspeed FY2023 10-K: cash and investments"
+    confidence: high
+    as_of: "2023-08-23"
+
+  - field: total_debt_usd
+    value: 4175100000
+    source: "Wolfspeed FY2023 10-K: long-term debt plus convertible notes"
+    confidence: high
+    as_of: "2023-08-23"
+
+  - field: current_revenue_usd
+    value: 807200000
+    source: "Wolfspeed FY2023 revenue"
+    confidence: high
+    as_of: "2023-08-23"
+
+  - field: factory_proxy
+    value: "2.0B proxy capacity units, 20% utilisation, 90% yield and 5 USD ASP"
+    source: "Economic proxy for physical-feasibility stress; not a literal unit-price disclosure"
+    confidence: low
+    as_of: "2023-08-23"
+
+  - field: annual_fcf_usd
+    value: -1820000000
+    source: "Annualized from Q4 FY2023 FCF of approximately negative $455M"
+    confidence: medium
+    as_of: "2023-08-23"
+
+  - field: debt_structure
+    value: "Convertible tranches and conversion terms are approximate historical inputs"
+    source: "Historical reconstruction; verify against original convertible note disclosures"
+    confidence: low
+    as_of: "2023-08-23"
+
+  - field: scenario_assumptions
+    value: "Heuristic analyst assumptions; not company guidance"
+    source: "Analyst scenario design"
+    confidence: low
+    as_of: "2023-08-23"

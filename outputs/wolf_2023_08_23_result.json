@@ -1,0 +1,300 @@
+{
+  "runner_version": "CASE-RUNNER-4.1.0",
+  "decision": "WATCHLIST / REJECT",
+  "base_scenario": "Base",
+  "hard_vetoes": [
+    "base_scenario_physically_unsupported",
+    "capital_structure_crisis_risk"
+  ],
+  "red_flags": [
+    "Bull: physically unsupported",
+    "one_or_more_scenarios_exceed_physical_capacity",
+    "insufficient_asymmetry"
+  ],
+  "watch_items": [
+    "Bull: terminal value dominates scenario valuation"
+  ],
+  "valuation": {
+    "engine_version": "EGE-4.0.2-final",
+    "status": "OK",
+    "market": {
+      "market_cap_usd": 5503700000,
+      "enterprise_value_usd": 6723900000
+    },
+    "scenario_valuation": [
+      {
+        "scenario": "Bear",
+        "probability": 0.35,
+        "revenue_year_n_usd": 358158928.24999994,
+        "ebit_year_n_usd": 14326357.129999997,
+        "fcff_year_n_usd": 5658911.066349999,
+        "nol_balance_remaining_usd": 0.0,
+        "revenue_quality_check": null,
+        "enterprise_value_usd": 71766890.2564142,
+        "equity_value_pre_dilution_usd": 351566890.2564144,
+        "equity_value_usd": 0.0,
+        "terminal_value_pct_of_ev": 0.6116060101791316,
+        "tv_dominance_flag": "OK",
+        "physical_feasibility": {
+          "status": "PHYSICALLY_FEASIBLE",
+          "physical_feasibility_gap": -0.005140376533389015,
+          "physical_revenue_ceiling_usd": 360000000.0
+        },
+        "margin_credibility": {
+          "status": "PHYSICALLY_CONSISTENT",
+          "margin_gap_pp": -0.96
+        },
+        "scenario_red_flags": [],
+        "return_multiple": 0.0,
+        "return_pct": -1.0
+      },
+      {
+        "scenario": "Base",
+        "probability": 0.45,
+        "revenue_year_n_usd": 1623567521.7499995,
+        "ebit_year_n_usd": 194828102.60999992,
+        "fcff_year_n_usd": 92348520.63713998,
+        "nol_balance_remaining_usd": 0.0,
+        "revenue_quality_check": null,
+        "enterprise_value_usd": 1123837594.3524504,
+        "equity_value_pre_dilution_usd": 653637594.3524504,
+        "equity_value_usd": 0.0,
+        "terminal_value_pct_of_ev": 0.7967084139465206,
+        "tv_dominance_flag": "OK",
+        "physical_feasibility": {
+          "status": "PHYSICALLY_UNSUPPORTED",
+          "physical_feasibility_gap": 0.7782660744457577,
+          "physical_revenue_ceiling_usd": 360000000.0
+        },
+        "margin_credibility": {
+          "status": "PHYSICALLY_CONSISTENT",
+          "margin_gap_pp": -0.88
+        },
+        "scenario_red_flags": [
+          "scenario_exceeds_physical_capacity"
+        ],
+        "return_multiple": 0.0,
+        "return_pct": -1.0
+      },
+      {
+        "scenario": "Bull",
+        "probability": 0.2,
+        "revenue_year_n_usd": 3619511790.7500014,
+        "ebit_year_n_usd": 796292593.9650003,
+        "fcff_year_n_usd": 440349804.4626452,
+        "nol_balance_remaining_usd": 0.0,
+        "revenue_quality_check": null,
+        "enterprise_value_usd": 6506476007.868537,
+        "equity_value_pre_dilution_usd": 5286276007.868537,
+        "equity_value_usd": 5286276007.868537,
+        "terminal_value_pct_of_ev": 0.8749107015311294,
+        "tv_dominance_flag": "TV_DOMINATED",
+        "physical_feasibility": {
+          "status": "PHYSICALLY_UNSUPPORTED",
+          "physical_feasibility_gap": 0.9005390724461754,
+          "physical_revenue_ceiling_usd": 360000000.0
+        },
+        "margin_credibility": {
+          "status": "PHYSICALLY_CONSISTENT",
+          "margin_gap_pp": -0.78
+        },
+        "scenario_red_flags": [
+          "scenario_exceeds_physical_capacity",
+          "terminal_value_dominates_thesis"
+        ],
+        "return_multiple": 0.9604949411974739,
+        "return_pct": -0.03950505880252608
+      }
+    ],
+    "probability_weighted_valuation": {
+      "expected_equity_value_usd": 1057255201.5737075,
+      "expected_return": -0.8079010117605052,
+      "scenario_results": [
+        {
+          "scenario": "Bear",
+          "probability": 0.35,
+          "revenue_year_n_usd": 358158928.24999994,
+          "ebit_year_n_usd": 14326357.129999997,
+          "fcff_year_n_usd": 5658911.066349999,
+          "nol_balance_remaining_usd": 0.0,
+          "revenue_quality_check": null,
+          "enterprise_value_usd": 71766890.2564142,
+          "equity_value_pre_dilution_usd": 351566890.2564144,
+          "equity_value_usd": 0.0,
+          "terminal_value_pct_of_ev": 0.6116060101791316,
+          "tv_dominance_flag": "OK",
+          "physical_feasibility": {
+            "status": "PHYSICALLY_FEASIBLE",
+            "physical_feasibility_gap": -0.005140376533389015,
+            "physical_revenue_ceiling_usd": 360000000.0
+          },
+          "margin_credibility": {
+            "status": "PHYSICALLY_CONSISTENT",
+            "margin_gap_pp": -0.96
+          },
+          "scenario_red_flags": [],
+          "return_multiple": 0.0,
+          "return_pct": -1.0
+        },
+        {
+          "scenario": "Base",
+          "probability": 0.45,
+          "revenue_year_n_usd": 1623567521.7499995,
+          "ebit_year_n_usd": 194828102.60999992,
+          "fcff_year_n_usd": 92348520.63713998,
+          "nol_balance_remaining_usd": 0.0,
+          "revenue_quality_check": null,
+          "enterprise_value_usd": 1123837594.3524504,
+          "equity_value_pre_dilution_usd": 653637594.3524504,
+          "equity_value_usd": 0.0,
+          "terminal_value_pct_of_ev": 0.7967084139465206,
+          "tv_dominance_flag": "OK",
+          "physical_feasibility": {
+            "status": "PHYSICALLY_UNSUPPORTED",
+            "physical_feasibility_gap": 0.7782660744457577,
+            "physical_revenue_ceiling_usd": 360000000.0
+          },
+          "margin_credibility": {
+            "status": "PHYSICALLY_CONSISTENT",
+            "margin_gap_pp": -0.88
+          },
+          "scenario_red_flags": [
+            "scenario_exceeds_physical_capacity"
+          ],
+          "return_multiple": 0.0,
+          "return_pct": -1.0
+        },
+        {
+          "scenario": "Bull",
+          "probability": 0.2,
+          "revenue_year_n_usd": 3619511790.7500014,
+          "ebit_year_n_usd": 796292593.9650003,
+          "fcff_year_n_usd": 440349804.4626452,
+          "nol_balance_remaining_usd": 0.0,
+          "revenue_quality_check": null,
+          "enterprise_value_usd": 6506476007.868537,
+          "equity_value_pre_dilution_usd": 5286276007.868537,
+          "equity_value_usd": 5286276007.868537,
+          "terminal_value_pct_of_ev": 0.8749107015311294,
+          "tv_dominance_flag": "TV_DOMINATED",
+          "physical_feasibility": {
+            "status": "PHYSICALLY_UNSUPPORTED",
+            "physical_feasibility_gap": 0.9005390724461754,
+            "physical_revenue_ceiling_usd": 360000000.0
+          },
+          "margin_credibility": {
+            "status": "PHYSICALLY_CONSISTENT",
+            "margin_gap_pp": -0.78
+          },
+          "scenario_red_flags": [
+            "scenario_exceeds_physical_capacity",
+            "terminal_value_dominates_thesis"
+          ],
+          "return_multiple": 0.9604949411974739,
+          "return_pct": -0.03950505880252608
+        }
+      ]
+    },
+    "asymmetry": {
+      "asymmetry_ratio": 0.0,
+      "verdict": "WATCHLIST_OR_REJECT"
+    },
+    "red_flags": [
+      "one_or_more_scenarios_exceed_physical_capacity",
+      "insufficient_asymmetry"
+    ],
+    "verdict": "WATCHLIST / REJECT"
+  },
+  "debt_structure": {
+    "verdict": "CAPITAL_STRUCTURE_CRISIS_RISK",
+    "total_refinancing_gap_usd": 1275600000.0,
+    "instruments": [
+      {
+        "principal_usd": 1750000000.0,
+        "years_to_maturity": 6.28,
+        "price_to_conversion_ratio": 0.441,
+        "overhang_status": "OUT_OF_THE_MONEY_NO_PRESSURE",
+        "wall_status": "BEYOND_FORECAST_HORIZON",
+        "refinancing_gap_usd": 0.0,
+        "projected_cash_available_usd": null
+      },
+      {
+        "principal_usd": 1275600000.0,
+        "years_to_maturity": 2.77,
+        "price_to_conversion_ratio": 0.7,
+        "overhang_status": "OUT_OF_THE_MONEY_NO_PRESSURE",
+        "wall_status": "MATURITY_WALL_UNCOVERED",
+        "refinancing_gap_usd": 1275600000.0,
+        "projected_cash_available_usd": 0.0
+      }
+    ]
+  },
+  "portfolio_risk": null,
+  "case": {
+    "ticker": "WOLF",
+    "company_name": "Wolfspeed, Inc.",
+    "point_in_time": "2023-08-23",
+    "currency": "USD",
+    "case_type": "historical validation",
+    "notes": "Caso de capacidade industrial e risco de estrutura de capital. O objetivo principal deste config é testar que FCF negativo depleta o cash projetado e que uma maturity wall não coberta produz CAPITAL_STRUCTURE_CRISIS_RISK. Termos dos convertíveis são aproximações históricas e devem ser conferidos no filing original antes de qualquer utilização de investimento real.\n"
+  },
+  "sources": [
+    {
+      "field": "share_price_usd",
+      "value": 44.1,
+      "source": "Historical market close around FY2023 Q4 earnings release",
+      "confidence": "high",
+      "as_of": "2023-08-23"
+    },
+    {
+      "field": "current_shares",
+      "value": 124794000,
+      "source": "Wolfspeed FY2023 10-K",
+      "confidence": "high",
+      "as_of": "2023-08-23"
+    },
+    {
+      "field": "market_cap_usd",
+      "value": 5503700000,
+      "source": "Calculated from share price and shares outstanding",
+      "confidence": "medium",
+      "as_of": "2023-08-23"
+    },
+    {
+      "field": "cash_usd",
+      "value": 2954900000,
+      "source": "Wolfspeed FY2023 10-K: cash and investments",
+      "confidence": "high",
+      "as_of": "2023-08-23"
+    },
+    {
+      "field": "total_debt_usd",
+      "value": 4175100000,
+      "source": "Wolfspeed FY2023 10-K: long-term debt plus convertible notes",
+      "confidence": "high",
+      "as_of": "2023-08-23"
+    },
+    {
+      "field": "annual_fcf_usd",
+      "value": -1820000000,
+      "source": "Annualized from Q4 FY2023 FCF of approximately negative $455M",
+      "confidence": "medium",
+      "as_of": "2023-08-23"
+    },
+    {
+      "field": "debt_structure",
+      "value": "Convertible tranches and conversion terms are approximate historical inputs",
+      "source": "Historical reconstruction; verify against original convertible note disclosures",
+      "confidence": "low",
+      "as_of": "2023-08-23"
+    },
+    {
+      "field": "scenario_assumptions",
+      "value": "Heuristic analyst assumptions; not company guidance",
+      "source": "Analyst scenario design",
+      "confidence": "low",
+      "as_of": "2023-08-23"
+    }
+  ],
+  "config_version": "CASE-CONFIG-4.1.0"
+}

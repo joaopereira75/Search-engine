@@ -1,0 +1,358 @@
+{
+  "sensitivity_version": "SENSITIVITY-1.0.0",
+  "analysis_type": "one_way",
+  "driver": "debt_context.cash_usd",
+  "baseline_driver_value": 2954900000,
+  "baseline": {
+    "expected_equity_value_usd": 1057255201.5737075,
+    "expected_return": -0.8079010117605052,
+    "asymmetry_ratio": 0.0,
+    "asymmetry_verdict": "WATCHLIST_OR_REJECT",
+    "decision": "WATCHLIST / REJECT",
+    "hard_vetoes": [
+      "capital_structure_crisis_risk"
+    ],
+    "red_flags": [
+      "Bull: physically unsupported",
+      "one_or_more_scenarios_exceed_physical_capacity",
+      "insufficient_asymmetry"
+    ],
+    "watch_items": [
+      "Bull: terminal value dominates scenario valuation"
+    ],
+    "refinancing_gap_usd": 1275600000.0,
+    "physical_feasibility_gap": 0.5026953622308767,
+    "base_scenario_physical_feasibility_gap": -0.10866962777121131,
+    "incremental_roic": null,
+    "dominant_scenario": "Bull"
+  },
+  "points": [
+    {
+      "expected_equity_value_usd": 1057255201.5737075,
+      "expected_return": -0.8079010117605052,
+      "asymmetry_ratio": 0.0,
+      "asymmetry_verdict": "WATCHLIST_OR_REJECT",
+      "decision": "WATCHLIST / REJECT",
+      "hard_vetoes": [
+        "capital_structure_crisis_risk"
+      ],
+      "red_flags": [
+        "Bull: physically unsupported",
+        "one_or_more_scenarios_exceed_physical_capacity",
+        "insufficient_asymmetry"
+      ],
+      "watch_items": [
+        "Bull: terminal value dominates scenario valuation"
+      ],
+      "refinancing_gap_usd": 1275600000.0,
+      "physical_feasibility_gap": 0.5026953622308767,
+      "base_scenario_physical_feasibility_gap": -0.10866962777121131,
+      "incremental_roic": null,
+      "dominant_scenario": "Bull",
+      "driver": "debt_context.cash_usd",
+      "value": 1000000000.0,
+      "decision_flip": false,
+      "impact_score": 0.0
+    },
+    {
+      "expected_equity_value_usd": 1057255201.5737075,
+      "expected_return": -0.8079010117605052,
+      "asymmetry_ratio": 0.0,
+      "asymmetry_verdict": "WATCHLIST_OR_REJECT",
+      "decision": "WATCHLIST / REJECT",
+      "hard_vetoes": [
+        "capital_structure_crisis_risk"
+      ],
+      "red_flags": [
+        "Bull: physically unsupported",
+        "one_or_more_scenarios_exceed_physical_capacity",
+        "insufficient_asymmetry"
+      ],
+      "watch_items": [
+        "Bull: terminal value dominates scenario valuation"
+      ],
+      "refinancing_gap_usd": 1275600000.0,
+      "physical_feasibility_gap": 0.5026953622308767,
+      "base_scenario_physical_feasibility_gap": -0.10866962777121131,
+      "incremental_roic": null,
+      "dominant_scenario": "Bull",
+      "driver": "debt_context.cash_usd",
+      "value": 2000000000.0,
+      "decision_flip": false,
+      "impact_score": 0.0
+    },
+    {
+      "expected_equity_value_usd": 1057255201.5737075,
+      "expected_return": -0.8079010117605052,
+      "asymmetry_ratio": 0.0,
+      "asymmetry_verdict": "WATCHLIST_OR_REJECT",
+      "decision": "WATCHLIST / REJECT",
+      "hard_vetoes": [
+        "capital_structure_crisis_risk"
+      ],
+      "red_flags": [
+        "Bull: physically unsupported",
+        "one_or_more_scenarios_exceed_physical_capacity",
+        "insufficient_asymmetry"
+      ],
+      "watch_items": [
+        "Bull: terminal value dominates scenario valuation"
+      ],
+      "refinancing_gap_usd": 1275600000.0,
+      "physical_feasibility_gap": 0.5026953622308767,
+      "base_scenario_physical_feasibility_gap": -0.10866962777121131,
+      "incremental_roic": null,
+      "dominant_scenario": "Bull",
+      "driver": "debt_context.cash_usd",
+      "value": 2954900000.0,
+      "decision_flip": false,
+      "impact_score": 0.0
+    },
+    {
+      "expected_equity_value_usd": 1057255201.5737075,
+      "expected_return": -0.8079010117605052,
+      "asymmetry_ratio": 0.0,
+      "asymmetry_verdict": "WATCHLIST_OR_REJECT",
+      "decision": "WATCHLIST / REJECT",
+      "hard_vetoes": [
+        "capital_structure_crisis_risk"
+      ],
+      "red_flags": [
+        "Bull: physically unsupported",
+        "one_or_more_scenarios_exceed_physical_capacity",
+        "insufficient_asymmetry"
+      ],
+      "watch_items": [
+        "Bull: terminal value dominates scenario valuation"
+      ],
+      "refinancing_gap_usd": 1275600000.0,
+      "physical_feasibility_gap": 0.5026953622308767,
+      "base_scenario_physical_feasibility_gap": -0.10866962777121131,
+      "incremental_roic": null,
+      "dominant_scenario": "Bull",
+      "driver": "debt_context.cash_usd",
+      "value": 3500000000.0,
+      "decision_flip": false,
+      "impact_score": 0.0
+    },
+    {
+      "expected_equity_value_usd": 1057255201.5737075,
+      "expected_return": -0.8079010117605052,
+      "asymmetry_ratio": 0.0,
+      "asymmetry_verdict": "WATCHLIST_OR_REJECT",
+      "decision": "WATCHLIST / REJECT",
+      "hard_vetoes": [
+        "capital_structure_crisis_risk"
+      ],
+      "red_flags": [
+        "Bull: physically unsupported",
+        "one_or_more_scenarios_exceed_physical_capacity",
+        "insufficient_asymmetry"
+      ],
+      "watch_items": [
+        "Bull: terminal value dominates scenario valuation"
+      ],
+      "refinancing_gap_usd": 1275600000.0,
+      "physical_feasibility_gap": 0.5026953622308767,
+      "base_scenario_physical_feasibility_gap": -0.10866962777121131,
+      "incremental_roic": null,
+      "dominant_scenario": "Bull",
+      "driver": "debt_context.cash_usd",
+      "value": 4500000000.0,
+      "decision_flip": false,
+      "impact_score": 0.0
+    },
+    {
+      "expected_equity_value_usd": 1057255201.5737075,
+      "expected_return": -0.8079010117605052,
+      "asymmetry_ratio": 0.0,
+      "asymmetry_verdict": "WATCHLIST_OR_REJECT",
+      "decision": "WATCHLIST / REJECT",
+      "hard_vetoes": [
+        "capital_structure_crisis_risk"
+      ],
+      "red_flags": [
+        "Bull: physically unsupported",
+        "one_or_more_scenarios_exceed_physical_capacity",
+        "insufficient_asymmetry"
+      ],
+      "watch_items": [
+        "Bull: terminal value dominates scenario valuation"
+      ],
+      "refinancing_gap_usd": 823265982.20397,
+      "physical_feasibility_gap": 0.5026953622308767,
+      "base_scenario_physical_feasibility_gap": -0.10866962777121131,
+      "incremental_roic": null,
+      "dominant_scenario": "Bull",
+      "driver": "debt_context.cash_usd",
+      "value": 5500000000.0,
+      "decision_flip": false,
+      "impact_score": 17.730245
+    }
+  ],
+  "points_ranked_by_impact": [
+    {
+      "expected_equity_value_usd": 1057255201.5737075,
+      "expected_return": -0.8079010117605052,
+      "asymmetry_ratio": 0.0,
+      "asymmetry_verdict": "WATCHLIST_OR_REJECT",
+      "decision": "WATCHLIST / REJECT",
+      "hard_vetoes": [
+        "capital_structure_crisis_risk"
+      ],
+      "red_flags": [
+        "Bull: physically unsupported",
+        "one_or_more_scenarios_exceed_physical_capacity",
+        "insufficient_asymmetry"
+      ],
+      "watch_items": [
+        "Bull: terminal value dominates scenario valuation"
+      ],
+      "refinancing_gap_usd": 823265982.20397,
+      "physical_feasibility_gap": 0.5026953622308767,
+      "base_scenario_physical_feasibility_gap": -0.10866962777121131,
+      "incremental_roic": null,
+      "dominant_scenario": "Bull",
+      "driver": "debt_context.cash_usd",
+      "value": 5500000000.0,
+      "decision_flip": false,
+      "impact_score": 17.730245
+    },
+    {
+      "expected_equity_value_usd": 1057255201.5737075,
+      "expected_return": -0.8079010117605052,
+      "asymmetry_ratio": 0.0,
+      "asymmetry_verdict": "WATCHLIST_OR_REJECT",
+      "decision": "WATCHLIST / REJECT",
+      "hard_vetoes": [
+        "capital_structure_crisis_risk"
+      ],
+      "red_flags": [
+        "Bull: physically unsupported",
+        "one_or_more_scenarios_exceed_physical_capacity",
+        "insufficient_asymmetry"
+      ],
+      "watch_items": [
+        "Bull: terminal value dominates scenario valuation"
+      ],
+      "refinancing_gap_usd": 1275600000.0,
+      "physical_feasibility_gap": 0.5026953622308767,
+      "base_scenario_physical_feasibility_gap": -0.10866962777121131,
+      "incremental_roic": null,
+      "dominant_scenario": "Bull",
+      "driver": "debt_context.cash_usd",
+      "value": 4500000000.0,
+      "decision_flip": false,
+      "impact_score": 0.0
+    },
+    {
+      "expected_equity_value_usd": 1057255201.5737075,
+      "expected_return": -0.8079010117605052,
+      "asymmetry_ratio": 0.0,
+      "asymmetry_verdict": "WATCHLIST_OR_REJECT",
+      "decision": "WATCHLIST / REJECT",
+      "hard_vetoes": [
+        "capital_structure_crisis_risk"
+      ],
+      "red_flags": [
+        "Bull: physically unsupported",
+        "one_or_more_scenarios_exceed_physical_capacity",
+        "insufficient_asymmetry"
+      ],
+      "watch_items": [
+        "Bull: terminal value dominates scenario valuation"
+      ],
+      "refinancing_gap_usd": 1275600000.0,
+      "physical_feasibility_gap": 0.5026953622308767,
+      "base_scenario_physical_feasibility_gap": -0.10866962777121131,
+      "incremental_roic": null,
+      "dominant_scenario": "Bull",
+      "driver": "debt_context.cash_usd",
+      "value": 3500000000.0,
+      "decision_flip": false,
+      "impact_score": 0.0
+    },
+    {
+      "expected_equity_value_usd": 1057255201.5737075,
+      "expected_return": -0.8079010117605052,
+      "asymmetry_ratio": 0.0,
+      "asymmetry_verdict": "WATCHLIST_OR_REJECT",
+      "decision": "WATCHLIST / REJECT",
+      "hard_vetoes": [
+        "capital_structure_crisis_risk"
+      ],
+      "red_flags": [
+        "Bull: physically unsupported",
+        "one_or_more_scenarios_exceed_physical_capacity",
+        "insufficient_asymmetry"
+      ],
+      "watch_items": [
+        "Bull: terminal value dominates scenario valuation"
+      ],
+      "refinancing_gap_usd": 1275600000.0,
+      "physical_feasibility_gap": 0.5026953622308767,
+      "base_scenario_physical_feasibility_gap": -0.10866962777121131,
+      "incremental_roic": null,
+      "dominant_scenario": "Bull",
+      "driver": "debt_context.cash_usd",
+      "value": 2954900000.0,
+      "decision_flip": false,
+      "impact_score": 0.0
+    },
+    {
+      "expected_equity_value_usd": 1057255201.5737075,
+      "expected_return": -0.8079010117605052,
+      "asymmetry_ratio": 0.0,
+      "asymmetry_verdict": "WATCHLIST_OR_REJECT",
+      "decision": "WATCHLIST / REJECT",
+      "hard_vetoes": [
+        "capital_structure_crisis_risk"
+      ],
+      "red_flags": [
+        "Bull: physically unsupported",
+        "one_or_more_scenarios_exceed_physical_capacity",
+        "insufficient_asymmetry"
+      ],
+      "watch_items": [
+        "Bull: terminal value dominates scenario valuation"
+      ],
+      "refinancing_gap_usd": 1275600000.0,
+      "physical_feasibility_gap": 0.5026953622308767,
+      "base_scenario_physical_feasibility_gap": -0.10866962777121131,
+      "incremental_roic": null,
+      "dominant_scenario": "Bull",
+      "driver": "debt_context.cash_usd",
+      "value": 2000000000.0,
+      "decision_flip": false,
+      "impact_score": 0.0
+    },
+    {
+      "expected_equity_value_usd": 1057255201.5737075,
+      "expected_return": -0.8079010117605052,
+      "asymmetry_ratio": 0.0,
+      "asymmetry_verdict": "WATCHLIST_OR_REJECT",
+      "decision": "WATCHLIST / REJECT",
+      "hard_vetoes": [
+        "capital_structure_crisis_risk"
+      ],
+      "red_flags": [
+        "Bull: physically unsupported",
+        "one_or_more_scenarios_exceed_physical_capacity",
+        "insufficient_asymmetry"
+      ],
+      "watch_items": [
+        "Bull: terminal value dominates scenario valuation"
+      ],
+      "refinancing_gap_usd": 1275600000.0,
+      "physical_feasibility_gap": 0.5026953622308767,
+      "base_scenario_physical_feasibility_gap": -0.10866962777121131,
+      "incremental_roic": null,
+      "dominant_scenario": "Bull",
+      "driver": "debt_context.cash_usd",
+      "value": 1000000000.0,
+      "decision_flip": false,
+      "impact_score": 0.0
+    }
+  ],
+  "decision_flip_points": []
+}
