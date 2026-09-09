@@ -200,7 +200,7 @@ def test_asymmetry_ratio_regression_uses_real_engine():
     results = [engine.value_scenario(scenario) for scenario in scenarios]
     asymmetry = engine.asymmetry_ratio(results)
 
-    assert np.isclose(asymmetry["asymmetry_ratio"], 1.3314597343477033, rtol=1e-9)
+    assert np.isclose(asymmetry["asymmetry_ratio"], 1.1693977033935576, rtol=1e-9)
     assert asymmetry["verdict"] == "WATCHLIST_OR_REJECT"
 
 

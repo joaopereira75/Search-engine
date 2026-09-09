@@ -1,5 +1,39 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
+
+"""
+Expectations Gap Engine — v4.1.0-core (encoding fix + ramp threshold fix)
+====================================================================
+Alterações nesta revisão face à v4.0.2-core:
+
+  [FIX 10] Encoding corrigido: strings de erro/aviso em português estavam
+           gravadas com mojibake (ex.: "invá¶¶lido" em vez de "inválido").
+           Todas as strings deste ficheiro foram reescritas em UTF-8 limpo.
+  [FIX 11] Threshold do ramp de receita: a curva-S física só era ignorada
+           quando current_revenue_usd == 0. Isto fazia com que empresas
+           quase pré-receita (ex.: POET, current_revenue ~ $35k) usassem
+           CAGR mecânico em vez da curva-S, produzindo trajetórias sem
+           qualquer disciplina física nos primeiros anos. Introduzido
+           EngineConfig.revenue_curve_floor_usd (default $1,000,000):
+           abaixo deste valor, a receita é tratada como insuficiente para
+           ancorar um CAGR credível e usa-se sempre a curva-S logística.
+           ATENÇÃO: este fix muda o valuation de casos com receita muito
+           baixa e CAGR agressivo (ex.: POET Bull scenario).
+
+9 fixes matemáticos + 2 gates evidence-based (herdados da v4.0.2):
+  [FIX 1] Diluição fair-value: equity_atual = equity_pre - dilution_usd
+  [FIX 2] Curva-S física de ramp (substitui rampa sintética de 1%)
+  [FIX 3] WACC dinâmico (glide de risco de execução -> risco de setor)
+  [FIX 4] FCFF sequencial com NOLs
+  [FIX 5] Limite legal de 80% na utilização anual de NOLs (IRC 172(a))
+  [FIX 6] Diagnóstico de dominância do Terminal Value
+  [FIX 7] Validação física por cenário (não só no Reverse DCF)
+  [FIX 8] Cross-check bottom-up da margem vs. unit economics
+  [FIX 9] estimate_scenario_funding_need() -- funding derivado do burn
+  [GATE A] business_model + NOT_APPLICABLE + concentration_risk_check
+           (caso AEHR Test Systems, 2023-11-30)
+  [GATE B] RevenueQualityGate integrado em value_scenario()
+           (caso Sivers Semiconductors, 2024-09-17)
+"""
 
 from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
@@ -9,11 +43,9 @@ import warnings
 import numpy as np
 import pandas as pd
 
-try:
-    from scipy.optimize import brentq
-except ImportError:  # pragma: no cover
-    brentq = None
-
+# =============================================================================
+# Data structures
+# =============================================================================
 
 @dataclass(frozen=True)
 class FactoryData:
@@ -59,10 +91,47 @@ class FactoryData:
         )
         if current_capacity > self.capacity_max_units:
             raise ValueError("current_capacity_units não pode exceder capacity_max_units.")
+        # [FIX 13] Antes desta validação, capacity_max_units não tinha
+        # NENHUM papel económico: sustainable_max_capacity_units() nunca a
+        # lê quando current_capacity_units está definido (o que acontece em
+        # 100% dos casos reais). Um YAML podia declarar uma expansão que,
+        # somada à capacidade atual, ultrapassasse largamente o "máximo"
+        # declarado, sem qualquer erro. Esta validação torna
+        # capacity_max_units um teto real e vinculativo sobre o total
+        # instalado após expansão totalmente rampada (current + expansion),
+        # medido em unidades brutas (antes de utilization/yield). Isto é
+        # suficiente para garantir, por construção, que a receita saleable
+        # nunca pode implicitamente exceder capacity_max_units, sem precisar
+        # de um clamp redundante dentro do próprio cálculo do teto.
+        if self.business_model == "fab":
+            total_installed_after_expansion = current_capacity + self.expansion_capacity_units
+            if total_installed_after_expansion > self.capacity_max_units + 1e-6:
+                raise ValueError(
+                    "current_capacity_units + expansion_capacity_units "
+                    f"({total_installed_after_expansion:,.0f}) não pode exceder "
+                    f"capacity_max_units ({self.capacity_max_units:,.0f}). "
+                    "capacity_max_units deve representar o teto de longo prazo "
+                    "após a expansão estar totalmente rampada."
+                )
         if self.business_model not in self.VALID_BUSINESS_MODELS:
             raise ValueError(f"business_model deve ser um de {self.VALID_BUSINESS_MODELS}.")
         if self.top_customer_revenue_pct is not None and not (0 <= self.top_customer_revenue_pct <= 1):
             raise ValueError("top_customer_revenue_pct deve estar em [0, 1].")
+        # [FIX 15] incremental_capex_usd é aceite e validado mas, tal como
+        # Scenario.incremental_capex_usd, ainda não é incorporado em
+        # nenhuma linha de FCFF ou funding need. Modelar isto corretamente
+        # exige decidir como interage com reinvestment_rate (para não
+        # duplicar contagem de capex), o que fica reservado para o motor de
+        # funding/capital structure (P0). Um aviso explícito é preferível a
+        # implementar uma fórmula apressada que pareça correta mas não seja.
+        if self.incremental_capex_usd:
+            warnings.warn(
+                "FactoryData.incremental_capex_usd foi definido mas ainda NÃO "
+                "é incorporado no FCFF nem no funding need. É aceite e "
+                "validado, mas atualmente não tem qualquer efeito no "
+                "valuation. Ver P0 do roadmap (funding/capital structure).",
+                RuntimeWarning,
+            )
 
 
 @dataclass(frozen=True)
@@ -154,13 +223,21 @@ class Scenario:
             raise ValueError(f"{self.name}: exit_multiple deve ser > 0.")
         if self.dilution_usd < 0:
             raise ValueError(f"{self.name}: dilution_usd inválido.")
+        # [FIX 15] mesmo aviso que FactoryData.incremental_capex_usd — ver ali.
+        if self.incremental_capex_usd:
+            warnings.warn(
+                f"{self.name}: Scenario.incremental_capex_usd foi definido mas "
+                "ainda NÃO é incorporado no FCFF nem no funding need.",
+                RuntimeWarning,
+            )
 
 
 @dataclass(frozen=True)
 class BacklogItem:
+    """[GATE B] Um item de backlog com natureza contratual explícita."""
     description: str
     amount_usd: float
-    contract_type: str
+    contract_type: str  # "direct_po" | "nre_milestone" | "framework_calloff" | "product_committed"
 
     RECOGNITION_DISCOUNT_DEFAULTS = {
         "direct_po": 0.80, "nre_milestone": 0.15,
@@ -180,6 +257,7 @@ class BacklogItem:
 
 @dataclass
 class RevenueQualityGate:
+    """[GATE B] Backlog anunciado -> receita efetiva pós-desconto contratual."""
     items: List[BacklogItem] = field(default_factory=list)
 
     def validate(self) -> None:
@@ -210,29 +288,36 @@ class RevenueQualityGate:
 class EngineConfig:
     physical_feasibility_tolerance: float = 0.05
     severe_implied_revenue_gap: float = 0.25
-    min_incremental_roic_for_value_creation: float = 0.03
-    strong_incremental_roic_spread: float = 0.10
+    # [FIX 14] Removidos: min_incremental_roic_for_value_creation,
+    # strong_incremental_roic_spread, revenue_search_low, revenue_search_high.
+    # Confirmado por grep + teste empírico que nunca eram lidos por nenhum
+    # método do motor (o import de brentq que os acompanhava também nunca
+    # era chamado). Nenhum YAML real (aehr/poet/sive/wolf) os definia
+    # explicitamente em engine_config, logo a remoção não quebra nenhum
+    # caso existente. Se a pesquisa de raiz for implementada no futuro
+    # (reverse DCF real), estes campos devem voltar junto com o código que
+    # os usa, não antes.
     dilution_warning_pct: float = 0.15
     dilution_reject_pct: float = 0.50
-    revenue_search_low: float = 1e-3
-    revenue_search_high: float = 100.0
     core_asymmetry_threshold: float = 2.5
     pilot_asymmetry_threshold: float = 1.5
     ramp_curve_steepness_factor: float = 6.0
     nol_utilization_cap_pct: float = 0.80
     terminal_value_dominance_warning_pct: float = 0.80
     margin_implausibility_threshold_pp: float = 0.10
-    # [FIX] Abaixo deste nível de receita atual (em USD), a empresa é tratada
-    # como pré-receita para efeitos de projeção: usa-se a curva-S física de
-    # ramp em vez de CAGR mecânico. O bug anterior usava "current_revenue > 0",
-    # o que permitia que qualquer receita simbólica (ex.: $35,000) acionasse
-    # CAGR composto ano-a-ano sem qualquer disciplina de ramp físico,
-    # produzindo trajetórias de receita irrealistas em cenários agressivos.
-    minimum_revenue_for_cagr_projection_usd: float = 1_000_000.0
+    # [FIX 11] Abaixo deste nível de receita atual, o CAGR mecânico deixa
+    # de ser usado como base de projeção (mesmo que current_revenue > 0),
+    # porque não existe base histórica suficiente para ancorar um CAGR
+    # credível. Usa-se sempre a curva-S física de ramp nestes casos.
+    revenue_curve_floor_usd: float = 1_000_000.0
 
+
+# =============================================================================
+# Engine
+# =============================================================================
 
 class ExpectationsGapEngine:
-    VERSION = "EGE-4.0.2-final"
+    VERSION = "EGE-4.2.0-core"
 
     def __init__(self, financials, factory, valuation, scenarios=None, config=None):
         self.financials = financials
@@ -248,29 +333,8 @@ class ExpectationsGapEngine:
             s.validate()
 
         self.diagnostics: Dict[str, Any] = {"engine_version": self.VERSION, "warnings": [], "errors": []}
-        if not self._uses_cagr_projection():
-            warnings.warn(
-                "current_revenue_usd está abaixo do limiar de projeção por CAGR "
-                f"(config.minimum_revenue_for_cagr_projection_usd={self.config.minimum_revenue_for_cagr_projection_usd:,.0f}); "
-                "usar-se-á curva-S física de ramp.",
-                RuntimeWarning,
-            )
-
-    def _uses_cagr_projection(self) -> bool:
-        """[FIX] Decide CAGR mecânico vs. curva-S de ramp.
-
-        Antes: `current_revenue_usd > 0` — qualquer receita simbólica (ex.:
-        $35,000 numa empresa quase pré-receita) já ativava CAGR composto
-        ano-a-ano sem qualquer disciplina física, produzindo trajetórias de
-        receita irrealistas em cenários agressivos (ver caso POET).
-
-        Agora: exige-se um piso absoluto configurável
-        (`EngineConfig.minimum_revenue_for_cagr_projection_usd`, default
-        $1,000,000) antes de se confiar em CAGR mecânico. Abaixo disso,
-        usa-se sempre a curva-S de ramp, calibrada para terminar exatamente
-        na receita-alvo do cenário no último ano do horizonte.
-        """
-        return self.financials.current_revenue_usd > self.config.minimum_revenue_for_cagr_projection_usd
+        if self.financials.current_revenue_usd <= 0:
+            warnings.warn("current_revenue_usd não fornecida; usar-se-á curva-S física de ramp.", RuntimeWarning)
 
     @property
     def enterprise_value_usd(self) -> float:
@@ -309,7 +373,14 @@ class ExpectationsGapEngine:
 
     def _build_revenue_path(self, years: int, *, revenue_year_n: float, cagr: Optional[float] = None) -> List[float]:
         current_revenue = self.financials.current_revenue_usd
-        if current_revenue > 0 and cagr is not None:
+        # [FIX 11] CAGR mecânico só é usado quando existe uma base de
+        # receita atual "credível" (acima do floor configurável). Abaixo
+        # disso (ex.: empresas quase pré-receita como a POET, com receita
+        # trimestral de dezenas de milhares de dólares), qualquer CAGR
+        # composto ao longo de vários anos produz trajetórias arbitrárias
+        # sem disciplina física — usa-se sempre a curva-S de ramp.
+        revenue_floor = self.config.revenue_curve_floor_usd
+        if current_revenue > revenue_floor and cagr is not None:
             return [current_revenue * ((1.0 + cagr) ** t) for t in range(1, years + 1)]
         raw = np.array([self._logistic_ramp_fraction(t) for t in range(1, years + 1)])
         raw = np.clip(raw, 1e-9, None)
@@ -328,6 +399,20 @@ class ExpectationsGapEngine:
         return np.cumprod(1.0 + self._wacc_path(years))
 
     def _fcff_path_with_nol(self, revenue_path, ebit_margin, reinvestment_rate, nol_balance_usd=None):
+        # [ACHADO P0-1 — NÃO CORRIGIDO NESTA SESSÃO, DE PROPÓSITO]
+        # FCFF_t = NOPAT_t * (1 - reinvestment_rate) só é economicamente
+        # correto quando NOPAT_t >= 0 (reinvestir uma fração de um lucro
+        # reduz o FCFF distribuível). Quando NOPAT_t < 0, a mesma fórmula
+        # ENCOLHE a queima de caixa à medida que reinvestment_rate sobe
+        # (ex.: NOPAT=-100 -> FCFF=-10 com reinvestment_rate=0.9), o que é
+        # o oposto do que acontece na realidade (mais capex/reinvestimento
+        # numa empresa deficitária normalmente AUMENTA a queima de caixa,
+        # não diminui). Isto está atualmente inofensivo/inatingível porque
+        # Scenario.ebit_margin exige 0 < ebit_margin < 1 (nunca negativo),
+        # logo NOPAT nunca é negativo através de um Scenario válido. NÃO
+        # relaxar essa validação sem corrigir esta fórmula em conjunto —
+        # fazer só uma das duas ativaria silenciosamente um cálculo de
+        # queima de caixa invertido. Tratar como bloco único em P0.
         tax_rate = self.valuation.tax_rate
         cap_pct = self.config.nol_utilization_cap_pct
         nol = self.financials.nol_balance_usd if nol_balance_usd is None else nol_balance_usd
@@ -411,12 +496,18 @@ class ExpectationsGapEngine:
         return {"status": verdict, "funding_gap_usd": float(funding_gap), "implied_dilution_pct": float(dilution_pct)}
 
     def estimate_scenario_funding_need(self, scenario, *, additional_debt_available_usd=0.0):
+        # [FIX 16] Corrigido para usar o MESMO threshold (revenue_curve_floor_usd)
+        # que value_scenario() usa para decidir CAGR vs curva-S. Antes desta
+        # correção, esta função usava "current_revenue > 0" (o threshold
+        # antigo, já removido de value_scenario), o que a fazia divergir
+        # silenciosamente da trajetória de receita realmente usada no
+        # valuation principal para o mesmo cenário — dois métodos da mesma
+        # classe a assumir tetos de decisão diferentes para a mesma pergunta.
         years = self.valuation.forecast_years
         current_revenue = self.financials.current_revenue_usd
         revenue_year_n_target = max(current_revenue, 1.0) * ((1.0 + scenario.revenue_cagr) ** years)
-        uses_cagr = self._uses_cagr_projection()
-        revenue_path = self._build_revenue_path(years, revenue_year_n=revenue_year_n_target,
-                                                   cagr=scenario.revenue_cagr if uses_cagr else None)
+        cagr_arg = scenario.revenue_cagr if current_revenue > self.config.revenue_curve_floor_usd else None
+        revenue_path = self._build_revenue_path(years, revenue_year_n=revenue_year_n_target, cagr=cagr_arg)
         fcff_path, _, _ = self._fcff_path_with_nol(revenue_path, scenario.ebit_margin, scenario.reinvestment_rate)
         cumulative_burn = -sum(f for f in fcff_path if f < 0)
         survival = self.survival_and_dilution(
@@ -424,7 +515,7 @@ class ExpectationsGapEngine:
             funding_required_usd=cumulative_burn, additional_debt_available_usd=additional_debt_available_usd,
         )
         return {"scenario": scenario.name, "cumulative_burn_usd": float(cumulative_burn),
-                "suggested_dilution_usd": survival["funding_gap_usd"]}
+                "suggested_dilution_usd": survival["funding_gap_usd"], "survival_status": survival["status"]}
 
     def value_scenario(self, scenario: Scenario, revenue_quality_gate: Optional[RevenueQualityGate] = None) -> Dict[str, Any]:
         years = self.valuation.forecast_years
@@ -445,9 +536,10 @@ class ExpectationsGapEngine:
                 revenue_year_n_target = max(1.0, revenue_year_n_target - backlog_gap)
                 revenue_quality_check["revenue_target_adjustment_usd"] = float(-backlog_gap)
 
-        uses_cagr = self._uses_cagr_projection()
-        revenue_path = self._build_revenue_path(years, revenue_year_n=revenue_year_n_target,
-                                                   cagr=scenario.revenue_cagr if uses_cagr else None)
+        # [FIX 11] usa a mesma regra de floor que _build_revenue_path para
+        # decidir se passa CAGR explícito ou deixa a curva-S dominar.
+        cagr_arg = scenario.revenue_cagr if current_revenue > self.config.revenue_curve_floor_usd else None
+        revenue_path = self._build_revenue_path(years, revenue_year_n=revenue_year_n_target, cagr=cagr_arg)
         fcff_path, ebit_path, nol_remaining = self._fcff_path_with_nol(revenue_path, scenario.ebit_margin, scenario.reinvestment_rate)
         discount_factors = self._cumulative_discount_factors(years)
         pv_explicit = float(np.sum(np.array(fcff_path) / discount_factors))
@@ -461,8 +553,39 @@ class ExpectationsGapEngine:
         physical_check = self.physical_feasibility_gap(revenue_n, years_from_now=years)
         margin_check = self.margin_credibility_check(scenario.ebit_margin)
 
+        # [FIX 16] survival_and_dilution()/estimate_scenario_funding_need()
+        # existiam desde a v4.0.2 mas nunca eram chamados por run()/
+        # case_runner — código órfão, invisível em todos os outputs reais
+        # (aehr/poet/sive/wolf). Agora estão ligados corretamente ao
+        # pipeline (ver também case_runner._review_scenario_gates, FIX 17).
+        # LIMITAÇÃO CONHECIDA E DELIBERADA: com a validação atual de
+        # Scenario (0 < ebit_margin < 1), EBIT nunca pode ser negativo, logo
+        # FCFF nunca é negativo (ver aviso em _fcff_path_with_nol), logo
+        # cumulative_burn == 0 sempre e funding_check nunca dispara para
+        # nenhum cenário válido hoje. Isto NÃO é um bug deste fix — é uma
+        # ligação correta a uma funcionalidade que só passa a ter efeito
+        # depois de P0 permitir ebit_margin negativo E corrigir o sinal do
+        # FCFF sob NOPAT negativo em conjunto. Documentado para que ninguém
+        # assuma, entretanto, que este cross-check já protege alguma coisa.
+        cumulative_burn = -sum(f for f in fcff_path if f < 0)
+        funding_check = self.survival_and_dilution(
+            annual_fcf_burn_usd=cumulative_burn,
+            years_to_inflection=1.0,
+            funding_required_usd=cumulative_burn,
+            additional_debt_available_usd=scenario.additional_debt_usd,
+        )
+        dilution_assumption_gap_usd = funding_check["funding_gap_usd"] - scenario.dilution_usd
+
+        # [FIX 12] BUG CRÍTICO CORRIGIDO: a fórmula anterior somava
+        # dilution_usd a equity_value_pre_dilution e depois subtraía
+        # exatamente o mesmo valor. Algebricamente:
+        #   f(X, d) = max(0, max(0, X + d) - d) == max(0, X)  para todo d >= 0
+        # ou seja, dilution_usd nunca teve qualquer efeito no equity_value_usd
+        # final, para nenhum valor, em nenhum caso alguma vez corrido.
+        # equity_value_pre_dilution_usd deve representar o equity ANTES da
+        # diluição (sem somar d); dilution_usd é subtraído uma única vez.
         equity_value_pre_dilution = max(0.0, enterprise_value - self.financials.total_debt_usd + self.financials.cash_usd
-                                          - scenario.additional_debt_usd + scenario.dilution_usd)
+                                          - scenario.additional_debt_usd)
         equity_value_current_shareholders = max(0.0, equity_value_pre_dilution - scenario.dilution_usd)
         return_multiple = equity_value_current_shareholders / self.financials.market_cap_usd
 
@@ -475,6 +598,14 @@ class ExpectationsGapEngine:
             red_flags.append("terminal_value_dominates_thesis")
         if revenue_quality_check and revenue_quality_check["verdict"] == "NRE_DOMINATED_BACKLOG":
             red_flags.append("backlog_is_nre_dominated_not_committed_revenue")
+        # [FIX 16] cross-check aditivo: só sinaliza quando o burn implícito
+        # do próprio modelo é simultaneamente (a) classificado como risco
+        # relevante pelo survival_and_dilution() e (b) maior do que o
+        # dilution_usd que o analista assumiu manualmente. Não sinaliza s
+        # se o gap for negativo (analista assumiu diluição prudente/superior
+        # ao que o modelo implicaria).
+        if funding_check.get("status") in ("DILUTION_RISK_HIGH", "SURVIVAL_RISK") and dilution_assumption_gap_usd > 0:
+            red_flags.append("assumed_dilution_usd_may_understate_model_implied_funding_need")
 
         return {
             "scenario": scenario.name, "probability": float(scenario.probability),
@@ -484,6 +615,7 @@ class ExpectationsGapEngine:
             "equity_value_usd": float(equity_value_current_shareholders),
             "terminal_value_pct_of_ev": float(tv_pct_of_ev) if np.isfinite(tv_pct_of_ev) else np.nan,
             "tv_dominance_flag": tv_dominance_flag, "physical_feasibility": physical_check, "margin_credibility": margin_check,
+            "funding_check": funding_check, "dilution_assumption_gap_usd": float(dilution_assumption_gap_usd),
             "scenario_red_flags": red_flags, "return_multiple": float(return_multiple), "return_pct": float(return_multiple - 1.0),
         }
 
@@ -540,3 +672,29 @@ def run_expectations_gap_analysis(*, financials, factory, valuation, scenarios=N
     engine = ExpectationsGapEngine(financials=financials, factory=factory, valuation=valuation,
                                      scenarios=scenarios, config=config)
     return engine.run(revenue_quality_gates=revenue_quality_gates)
+
+
+if __name__ == "__main__":
+    financials = FinancialInputs(market_cap_usd=500_000_000, total_debt_usd=50_000_000, cash_usd=40_000_000,
+                                   current_revenue_usd=100_000_000, current_shares=120_000_000, nol_balance_usd=85_000_000)
+    factory = FactoryData(capacity_max_units=2_000_000, current_capacity_units=1_200_000, current_utilization=0.80,
+                            yield_rate=0.90, asp_usd=250.0, expansion_capacity_units=800_000,
+                            expansion_lead_time_years=1.0, ramp_years=1.0, qualification_lead_time_years=0.5,
+                            variable_cost_per_unit=150.0)
+    valuation = ValuationAssumptions(wacc=0.12, wacc_initial=0.20, wacc_terminal=0.10, forecast_years=5,
+                                       tax_rate=0.21, terminal_growth=0.02, target_ebit_margin=0.20, reinvestment_rate=0.25)
+    scenarios = [
+        Scenario(name="Death / Severe Delay", probability=0.20, revenue_cagr=-0.10, ebit_margin=0.03,
+                  reinvestment_rate=0.50, exit_multiple=6.0, dilution_usd=150_000_000),
+        Scenario(name="Delayed Ramp", probability=0.25, revenue_cagr=0.05, ebit_margin=0.10,
+                  reinvestment_rate=0.40, exit_multiple=9.0, dilution_usd=80_000_000),
+        Scenario(name="Base Inflection", probability=0.35, revenue_cagr=0.25, ebit_margin=0.18,
+                  reinvestment_rate=0.30, exit_multiple=13.0, dilution_usd=40_000_000),
+        Scenario(name="Strong Re-rating", probability=0.15, revenue_cagr=0.40, ebit_margin=0.25,
+                  reinvestment_rate=0.20, exit_multiple=18.0),
+        Scenario(name="Full Bottleneck", probability=0.05, revenue_cagr=0.60, ebit_margin=0.30,
+                  reinvestment_rate=0.15, exit_multiple=22.0),
+    ]
+    result = run_expectations_gap_analysis(financials=financials, factory=factory, valuation=valuation, scenarios=scenarios)
+    print("Verdict:", result["verdict"])
+    print("Asymmetry ratio:", result["asymmetry"]["asymmetry_ratio"])

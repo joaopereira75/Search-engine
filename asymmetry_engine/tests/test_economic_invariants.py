@@ -79,21 +79,83 @@ def test_higher_asp_never_worsens_maximum_physical_gap() -> None:
     assert gaps == sorted(gaps, reverse=True)
 
 
-def test_higher_capacity_never_worsens_maximum_physical_gap() -> None:
+"""
+Substituir, em asymmetry_engine/tests/test_economic_invariants.py, a função
+test_higher_capacity_never_worsens_maximum_physical_gap por estas DUAS
+funções. A antiga era vácua: variava capacity_max_units mantendo
+current_capacity_units fixo, e como sustainable_max_capacity_units() só lê
+capacity_max_units quando current_capacity_units é None, os 5 pontos
+produziam exatamente o mesmo gap — uma sequência constante que satisfaz
+trivialmente "está ordenada", sem testar nada.
+"""
+
+def test_higher_current_capacity_never_worsens_maximum_physical_gap() -> None:
+    """
+    Substitui o teste vácuo original. Varia current_capacity_units (o campo
+    que realmente entra em sustainable_max_capacity_units), não
+    capacity_max_units (que é só um teto de validação de input desde o
+    FIX 13 — ver docstring de FactoryData.validate()). Sobe também
+    capacity_max_units em paralelo para não violar a nova validação
+    current+expansion <= capacity_max.
+    """
     loaded = _loaded_wolf_case()
+    from copy import deepcopy
+    from asymmetry_engine.sensitivity_engine import set_driver_value
 
-    # Wolfspeed tem current_capacity_units = 2.0B. A capacidade máxima nunca
-    # pode ficar abaixo da capacidade instalada; valores menores são inputs
-    # inválidos e devem continuar bloqueados pelo FactoryData.validate().
-    output = run_one_way_sensitivity(
-        loaded,
-        driver="factory.capacity_max_units",
-        values=[2_000_000_000, 2_500_000_000, 3_000_000_000, 4_000_000_000, 5_000_000_000],
+    values = [2_000_000_000, 2_500_000_000, 3_000_000_000, 4_000_000_000, 5_000_000_000]
+    gaps = []
+    for value in values:
+        candidate = deepcopy(loaded)
+        set_driver_value(candidate, "factory.capacity_max_units", value)  # sobe o teto primeiro
+        set_driver_value(candidate, "factory.current_capacity_units", value)  # so depois a capacidade real
+        result = run_case_config(candidate)
+        base = next(
+            s for s in result["valuation"]["scenario_valuation"]
+            if s["scenario"] == result["base_scenario"]
+        )
+        gaps.append(base["physical_feasibility"]["physical_feasibility_gap"])
+
+    assert len(set(gaps)) > 1, (
+        "O gap ficou constante — verificar se current_capacity_units está "
+        "mesmo a ser lido por sustainable_max_capacity_units()."
     )
-    gaps = [point["physical_feasibility_gap"] for point in output["points"]]
-
-    assert all(gap is not None for gap in gaps)
     assert gaps == sorted(gaps, reverse=True)
+
+
+def test_capacity_max_units_alone_has_no_effect_when_current_capacity_is_fixed() -> None:
+    """
+    Teste de CARACTERIZAÇÃO deliberada (não um invariante de negócio):
+    documenta explicitamente que capacity_max_units, isolado, não influencia
+    nenhum output numérico quando current_capacity_units fica fixo — porque,
+    desde o FIX 13, capacity_max_units passou a ser um teto de VALIDAÇÃO de
+    input (current + expansion <= capacity_max), nunca um driver direto do
+    cálculo do teto de receita. Se este teste alguma vez falhar (isto é, se
+    capacity_max_units passar a ter efeito nestas condições), foi feita uma
+    mudança de design que precisa de ser documentada, não uma regressão a
+    "corrigir" às cegas.
+    """
+    loaded = _loaded_wolf_case()
+    from copy import deepcopy
+    from asymmetry_engine.sensitivity_engine import set_driver_value
+
+    values = [2_000_000_000, 3_000_000_000, 5_000_000_000]
+    gaps = []
+    for value in values:
+        candidate = deepcopy(loaded)
+        set_driver_value(candidate, "factory.capacity_max_units", value)
+        # current_capacity_units NÃO muda — fica no valor original do YAML.
+        result = run_case_config(candidate)
+        base = next(
+            s for s in result["valuation"]["scenario_valuation"]
+            if s["scenario"] == result["base_scenario"]
+        )
+        gaps.append(base["physical_feasibility"]["physical_feasibility_gap"])
+
+    assert len(set(gaps)) == 1, (
+        "capacity_max_units passou a ter efeito isolado — documentar a "
+        "mudança de design em vez de apenas atualizar este teste."
+    )
+
 
 
 def test_higher_base_ebit_margin_never_reduces_base_enterprise_value() -> None:

@@ -1,12 +1,5 @@
 """
-asymmetry_engine/case_runner.py
-
-Case Runner / Decision Orchestrator — v4.2.0
-
-Integra valuation, gates operacionais, estrutura de capital e risco de
-liquidez opcional. A camada aplica política de decisão: os motores
-subordinados devolvem factos e classificações, enquanto este runner decide
-se esses sinais constituem hard veto, red flag ou watch item.
+asymmetry_engine/case_runner.py — v4.2.0
 """
 
 from __future__ import annotations
@@ -125,20 +118,32 @@ def _review_scenario_gates(
         elif concentration == "ELEVATED_CONCENTRATION_RISK":
             watch_items.append(f"{name}: elevated customer concentration risk")
 
+        # [FIX 17] O funding_check (survival_and_dilution) e o
+        # dilution_assumption_gap_usd foram ligados ao value_scenario()
+        # nesta sessão, mas ficavam presos no JSON do cenário sem nunca
+        # chegar aqui — ou seja, sem nunca influenciar hard_vetoes,
+        # red_flags, watch_items nem a decisão final. Corrigido: segue o
+        # mesmo padrão base/não-base das restantes regras desta função.
+        # Critério de disparo: o funding_check classifica o cenário como
+        # DILUTION_RISK_HIGH ou SURVIVAL_RISK **e**, adicionalmente, o
+        # dilution_usd que o analista assumiu é inferior ao funding_gap_usd
+        # que o próprio modelo implica (dilution_assumption_gap_usd > 0).
+        # Isto não introduz um novo hard veto — mantém-se conservador
+        # (red flag no Base, watch item nos restantes) até haver decisão
+        # explícita do utilizador sobre elevar isto a hard veto.
+        funding_status = result.get("funding_check", {}).get("status")
+        dilution_gap = result.get("dilution_assumption_gap_usd")
+        if funding_status in ("DILUTION_RISK_HIGH", "SURVIVAL_RISK") and dilution_gap is not None and dilution_gap > 0:
+            label = f"{name}: assumed dilution_usd may understate model-implied funding need"
+            if is_base:
+                red_flags.append(label)
+            else:
+                watch_items.append(label)
+
     return _unique(hard_vetoes), _unique(red_flags), _unique(watch_items)
 
 
 def _review_debt_gate(debt_result: Mapping[str, Any]) -> tuple[list[str], list[str], list[str]]:
-    """
-    Traduz estados factuais de dívida em política de decisão.
-
-    - Uncovered maturity wall: hard veto.
-    - Partial coverage: red flag, porque exige refinanciamento mas não implica
-      por si só insolvência inevitável.
-    - Covered / beyond forecast horizon: sem flag de maturity wall.
-    - Convertível in the money: red flag por pressão de diluição.
-    - Convertível near the money: watch item.
-    """
     hard_vetoes: list[str] = []
     red_flags: list[str] = []
     watch_items: list[str] = []
@@ -183,7 +188,6 @@ def run_full_case(
     portfolio_confidence: float = 0.95,
     portfolio_impact_metric: str = "H_95",
 ) -> Dict[str, Any]:
-    """Executa uma análise completa e devolve decisão, flags e resultados."""
     if not scenarios:
         raise ValueError("scenarios não pode ser vazio.")
     if debt_structure is not None and debt_context is None:
