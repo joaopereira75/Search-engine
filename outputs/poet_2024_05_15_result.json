@@ -43,6 +43,7 @@
         "margin_credibility": {
           "status": "NOT_COMPUTABLE"
         },
+        "incremental_roic": 0.07185,
         "funding_check": {
           "status": "SURVIVES_TO_INFLECTION",
           "funding_gap_usd": 0.0,
@@ -75,6 +76,7 @@
         "margin_credibility": {
           "status": "NOT_COMPUTABLE"
         },
+        "incremental_roic": 0.21555000000000002,
         "funding_check": {
           "status": "SURVIVES_TO_INFLECTION",
           "funding_gap_usd": 0.0,
@@ -109,6 +111,7 @@
         "margin_credibility": {
           "status": "NOT_COMPUTABLE"
         },
+        "incremental_roic": 0.35924999999999996,
         "funding_check": {
           "status": "SURVIVES_TO_INFLECTION",
           "funding_gap_usd": 0.0,
@@ -148,6 +151,7 @@
           "margin_credibility": {
             "status": "NOT_COMPUTABLE"
           },
+          "incremental_roic": 0.07185,
           "funding_check": {
             "status": "SURVIVES_TO_INFLECTION",
             "funding_gap_usd": 0.0,
@@ -180,6 +184,7 @@
           "margin_credibility": {
             "status": "NOT_COMPUTABLE"
           },
+          "incremental_roic": 0.21555000000000002,
           "funding_check": {
             "status": "SURVIVES_TO_INFLECTION",
             "funding_gap_usd": 0.0,
@@ -214,6 +219,7 @@
           "margin_credibility": {
             "status": "NOT_COMPUTABLE"
           },
+          "incremental_roic": 0.35924999999999996,
           "funding_check": {
             "status": "SURVIVES_TO_INFLECTION",
             "funding_gap_usd": 0.0,
@@ -245,30 +251,70 @@
     "point_in_time": "2024-05-15",
     "currency": "USD",
     "case_type": "historical validation",
-    "notes": "teste de regeneracao pos-fix"
+    "notes": "Caso fab-light e quase pre-receita. A classificacao not_applicable impede um teto fisico artificial; a concentracao do maior cliente e tratada como risco estrutural severo.\n"
   },
-  "sources": [],
+  "sources": [
+    {
+      "field": "market_cap_usd",
+      "value": 133000000,
+      "source": "Calculated from approximately $2.20 share price and 60,485,477 shares outstanding",
+      "confidence": "medium",
+      "as_of": "2024-05-15"
+    },
+    {
+      "field": "cash_usd",
+      "value": 23600000,
+      "source": "POET Technologies Q1 2024 press release",
+      "confidence": "high",
+      "as_of": "2024-05-15"
+    },
+    {
+      "field": "current_revenue_usd",
+      "value": 35000,
+      "source": "POET Technologies Q1 2024 press release",
+      "confidence": "high",
+      "as_of": "2024-05-15"
+    },
+    {
+      "field": "nol_balance_usd",
+      "value": 160000000,
+      "source": "POET Technologies 6-K / SEC filing",
+      "confidence": "high",
+      "as_of": "2024-05-15"
+    },
+    {
+      "field": "top_customer_revenue_pct",
+      "value": 0.9,
+      "source": "Historical case assumption for customer concentration stress",
+      "confidence": "medium",
+      "as_of": "2024-05-15"
+    },
+    {
+      "field": "scenario_assumptions",
+      "value": "Heuristic analyst assumptions; not company guidance",
+      "source": "Analyst scenario design",
+      "confidence": "low",
+      "as_of": "2024-05-15"
+    }
+  ],
   "validation": {
     "validation_version": "VALIDATION-1.0.2",
     "status": "PASS",
     "schema_errors": [],
     "financial_errors": [],
     "economic_warnings": [
-      "Material input 'cash_usd' has no source metadata.",
-      "Material input 'current_revenue_usd' has no source metadata.",
       "Material input 'current_shares' has no source metadata.",
       "Material input 'factory_proxy' has no source metadata.",
-      "Material input 'market_cap_usd' has no source metadata.",
-      "Material input 'scenario_assumptions' has no source metadata.",
       "Material input 'share_price_usd' has no source metadata.",
-      "Material input 'total_debt_usd' has no source metadata."
+      "Material input 'total_debt_usd' has no source metadata.",
+      "Material evidence 'scenario_assumptions' has low confidence and requires verification."
     ],
     "input_coverage": {
       "material_fields_required": 8,
-      "material_fields_with_source": 0,
-      "material_fields_with_as_of": 0,
-      "material_fields_with_confidence": 0,
-      "coverage_pct": 0.0
+      "material_fields_with_source": 4,
+      "material_fields_with_as_of": 4,
+      "material_fields_with_confidence": 4,
+      "coverage_pct": 50.0
     }
   },
   "config_version": "CASE-CONFIG-4.2.0"

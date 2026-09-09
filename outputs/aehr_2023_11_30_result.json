@@ -14,7 +14,7 @@
     "status": "OK",
     "market": {
       "market_cap_usd": 660800000,
-      "enterprise_value_usd": 610300000.0
+      "enterprise_value_usd": 610300000
     },
     "scenario_valuation": [
       {
@@ -37,6 +37,7 @@
         "margin_credibility": {
           "status": "NOT_COMPUTABLE"
         },
+        "incremental_roic": null,
         "funding_check": {
           "status": "SURVIVES_TO_INFLECTION",
           "funding_gap_usd": 0.0,
@@ -67,6 +68,7 @@
         "margin_credibility": {
           "status": "NOT_COMPUTABLE"
         },
+        "incremental_roic": 0.07704162895927606,
         "funding_check": {
           "status": "SURVIVES_TO_INFLECTION",
           "funding_gap_usd": 0.0,
@@ -97,6 +99,7 @@
         "margin_credibility": {
           "status": "NOT_COMPUTABLE"
         },
+        "incremental_roic": 0.2098462906093422,
         "funding_check": {
           "status": "SURVIVES_TO_INFLECTION",
           "funding_gap_usd": 0.0,
@@ -134,6 +137,7 @@
           "margin_credibility": {
             "status": "NOT_COMPUTABLE"
           },
+          "incremental_roic": null,
           "funding_check": {
             "status": "SURVIVES_TO_INFLECTION",
             "funding_gap_usd": 0.0,
@@ -164,6 +168,7 @@
           "margin_credibility": {
             "status": "NOT_COMPUTABLE"
           },
+          "incremental_roic": 0.07704162895927606,
           "funding_check": {
             "status": "SURVIVES_TO_INFLECTION",
             "funding_gap_usd": 0.0,
@@ -194,6 +199,7 @@
           "margin_credibility": {
             "status": "NOT_COMPUTABLE"
           },
+          "incremental_roic": 0.2098462906093422,
           "funding_check": {
             "status": "SURVIVES_TO_INFLECTION",
             "funding_gap_usd": 0.0,
@@ -224,29 +230,77 @@
     "company_name": "AEHR Test Systems",
     "point_in_time": "2023-11-30",
     "currency": "USD",
-    "case_type": "historical validation"
+    "case_type": "historical validation",
+    "notes": "Empresa de equipamento de teste, não uma fab. A verificação de teto físico de capacidade não se aplica; o caso valida business_model igual a equipment_vendor e o retorno NOT_APPLICABLE.\n"
   },
-  "sources": [],
+  "sources": [
+    {
+      "field": "share_price_usd",
+      "value": 22.96,
+      "source": "Historical market close, 2023-11-30",
+      "confidence": "high",
+      "as_of": "2023-11-30"
+    },
+    {
+      "field": "current_shares",
+      "value": 28784000,
+      "source": "Interpolated shares outstanding from AEHR quarterly filing",
+      "confidence": "medium",
+      "as_of": "2023-11-30"
+    },
+    {
+      "field": "market_cap_usd",
+      "value": 660800000,
+      "source": "Calculated from price and estimated shares outstanding",
+      "confidence": "medium",
+      "as_of": "2023-11-30"
+    },
+    {
+      "field": "cash_usd",
+      "value": 50500000,
+      "source": "AEHR Q3 FY2024 earnings release",
+      "confidence": "high",
+      "as_of": "2023-11-30"
+    },
+    {
+      "field": "current_revenue_usd",
+      "value": 63000000,
+      "source": "Approximate trailing revenue interpolated between fiscal reports",
+      "confidence": "medium",
+      "as_of": "2023-11-30"
+    },
+    {
+      "field": "nol_balance_usd",
+      "value": 20000000,
+      "source": "Placeholder; exact NOL balance was not verified at point in time",
+      "confidence": "low",
+      "as_of": "2023-11-30"
+    },
+    {
+      "field": "scenario_assumptions",
+      "value": "Heuristic analyst assumptions; not company guidance",
+      "source": "Analyst scenario design",
+      "confidence": "low",
+      "as_of": "2023-11-30"
+    }
+  ],
   "validation": {
     "validation_version": "VALIDATION-1.0.2",
     "status": "PASS",
     "schema_errors": [],
     "financial_errors": [],
     "economic_warnings": [
-      "Material input 'cash_usd' has no source metadata.",
-      "Material input 'current_revenue_usd' has no source metadata.",
-      "Material input 'current_shares' has no source metadata.",
       "Material input 'factory_proxy' has no source metadata.",
-      "Material input 'market_cap_usd' has no source metadata.",
-      "Material input 'scenario_assumptions' has no source metadata.",
-      "Material input 'share_price_usd' has no source metadata."
+      "Material input 'total_debt_usd' has no source metadata.",
+      "Material evidence 'nol_balance_usd' has low confidence and requires verification.",
+      "Material evidence 'scenario_assumptions' has low confidence and requires verification."
     ],
     "input_coverage": {
-      "material_fields_required": 7,
-      "material_fields_with_source": 0,
-      "material_fields_with_as_of": 0,
-      "material_fields_with_confidence": 0,
-      "coverage_pct": 0.0
+      "material_fields_required": 8,
+      "material_fields_with_source": 6,
+      "material_fields_with_as_of": 6,
+      "material_fields_with_confidence": 6,
+      "coverage_pct": 75.0
     }
   },
   "config_version": "CASE-CONFIG-4.2.0"

@@ -48,6 +48,28 @@ usados. Risco real de confusão para quem edita YAMLs.
 Implementados, documentados como "FIX 9", mas nunca chamados por
 `case_runner.py` nem `config.py`. Não aparecem em nenhum output JSON real.
 
+## Atualização — sessão seguinte (verificação independente do repositório real)
+
+Uma sessão anterior (não esta) alegou em texto ter ligado `current_shares`,
+`share_price_usd` e `incremental_capex_usd` (Factory+Scenario) ao motor.
+**Essa alegação nunca chegou ao repositório** — confirmado por `git log`
+(nenhum commit novo depois de `atualiações`), por `pytest -v` correndo os
+mesmos 55 testes de antes, e por grep direto ao código: nenhum destes três
+campos é lido em cálculo nenhum. Ficam corretamente listados abaixo como
+"confirmado morto".
+
+Nesta sessão foi corrigido, e verificado com `pytest` + execução real nos
+4 casos: **`incremental_roic` era ele próprio um output-fantasma** — existia
+no schema de `extract_snapshot()` mas nenhum método do motor alguma vez
+escrevia essa chave; devolvia sempre `None`. Corrigido em
+`ExpectationsGapEngine._incremental_roic_from_fcff_path()` (ver FIX 18 no
+código), usando `ValuationAssumptions.revenue_to_invested_capital` — que era
+também um campo-fantasma até este fix — como rácio de rotação de capital.
+Isto resolve dois itens desta lista de uma vez. Confirmado empiricamente:
+varia monotonicamente com `ebit_margin` (antes de uma correção intermédia
+falhar exatamente esse teste, documentada no código-fonte) e é `None`, não
+um número espúrio, sempre que a receita implícita do cenário não cresce.
+
 ## Confirmado morto (grep + perturbação concordam)
 - `FinancialInputs.current_ebitda_usd`
 - `FinancialInputs.current_invested_capital_usd`
@@ -58,6 +80,9 @@ Implementados, documentados como "FIX 9", mas nunca chamados por
 - `EngineConfig.min_incremental_roic_for_value_creation`
 - `EngineConfig.strong_incremental_roic_spread`
 - `EngineConfig.revenue_search_low` / `.revenue_search_high` (+ `brentq` importado, nunca chamado)
+
+~~`ValuationAssumptions.revenue_to_invested_capital`~~ — **já não está morto**,
+ver secção acima.
 
 ## Precisam de re-teste condicional antes de classificar (falsos negativos do meu harness)
 - `FactoryData.qualification_lead_time_years`

@@ -101,3 +101,44 @@ harness de teste — documentado no processo, não escondido.)
 5. Correr `pytest -v` no teu ambiente real (não pude correr a tua suite
    completa, só recriei os módulos necessários num sandbox) para apanhar
    qualquer teste que eu não tenha conseguido antecipar.
+
+---
+
+## Sessão seguinte — auditoria independente + FIX 18
+
+**Contexto:** o utilizador reportou que uma sessão paralela ("outra conta")
+alegou ter resolvido vários campos-fantasma (`current_shares`,
+`share_price_usd`, `incremental_capex_usd`) mas nunca mostrou output nem
+ficheiros. Verificação por clonagem direta do repositório GitHub e execução
+independente da suite de testes.
+
+**Confirmado por git log + pytest, não por confiança:**
+- Nenhum commit novo além de `atualiações` (o commit do P-1 desta thread).
+- 55/55 testes a passar, sem testes novos — nada da "outra conta" chegou ao repo.
+- `current_shares`, `share_price_usd`, `incremental_capex_usd` (Factory+Scenario):
+  confirmados ainda mortos por grep direto ao código-fonte.
+
+**Descoberta nova, fora das duas narrativas anteriores:** `incremental_roic`
+estava sempre `None` em todos os casos reais — um output-fantasma que a
+memória da sessão original descrevia incorretamente como "computado pela
+primeira vez".
+
+**FIX 18 (aplicado e testado):** `incremental_roic` agora calculado a partir
+de `revenue_to_invested_capital` (rácio de rotação de capital) e do NOPAT
+recuperado do `fcff_path` já computado. Duas tentativas documentadas no
+código-fonte: a primeira versão (reinvestimento = NOPAT × reinvestment_rate)
+era matematicamente invariante à margem — descoberto por teste empírico
+direto, não por inspeção — e foi substituída pela versão atual antes de
+chegar a produção.
+
+**Testes novos:** `test_higher_base_ebit_margin_never_reduces_incremental_roic`,
+`test_incremental_roic_is_none_not_misleading_when_revenue_declines`.
+Suite completa: **57 passed, 0 failed**.
+
+**Outputs regenerados:** os 4 JSONs em `outputs/` foram recriados via
+`python -m asymmetry_engine.cli run` para deixarem de ter
+`incremental_roic: null` nos cenários com receita crescente.
+
+**Ainda por fazer, sem alteração nesta sessão:**
+- `current_shares`, `share_price_usd`, `incremental_capex_usd` (Factory+Scenario) — dead, por decidir.
+- P0: sinal do FCFF sob NOPAT negativo — bloqueador estrutural documentado, intocado.

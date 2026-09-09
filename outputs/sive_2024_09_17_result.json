@@ -48,6 +48,7 @@
         "margin_credibility": {
           "status": "NOT_COMPUTABLE"
         },
+        "incremental_roic": null,
         "funding_check": {
           "status": "SURVIVES_TO_INFLECTION",
           "funding_gap_usd": 0.0,
@@ -86,6 +87,7 @@
         "margin_credibility": {
           "status": "NOT_COMPUTABLE"
         },
+        "incremental_roic": 0.14220000000000002,
         "funding_check": {
           "status": "SURVIVES_TO_INFLECTION",
           "funding_gap_usd": 0.0,
@@ -125,6 +127,7 @@
         "margin_credibility": {
           "status": "NOT_COMPUTABLE"
         },
+        "incremental_roic": 0.23700000000000004,
         "funding_check": {
           "status": "SURVIVES_TO_INFLECTION",
           "funding_gap_usd": 0.0,
@@ -169,6 +172,7 @@
           "margin_credibility": {
             "status": "NOT_COMPUTABLE"
           },
+          "incremental_roic": null,
           "funding_check": {
             "status": "SURVIVES_TO_INFLECTION",
             "funding_gap_usd": 0.0,
@@ -207,6 +211,7 @@
           "margin_credibility": {
             "status": "NOT_COMPUTABLE"
           },
+          "incremental_roic": 0.14220000000000002,
           "funding_check": {
             "status": "SURVIVES_TO_INFLECTION",
             "funding_gap_usd": 0.0,
@@ -246,6 +251,7 @@
           "margin_credibility": {
             "status": "NOT_COMPUTABLE"
           },
+          "incremental_roic": 0.23700000000000004,
           "funding_check": {
             "status": "SURVIVES_TO_INFLECTION",
             "funding_gap_usd": 0.0,
@@ -278,30 +284,89 @@
     "company_name": "Sivers Semiconductors AB",
     "point_in_time": "2024-09-17",
     "currency": "SEK",
-    "case_type": "historical validation"
+    "case_type": "historical validation",
+    "notes": "Caso para validar qualidade de backlog. O backlog anunciado de SEK 101,4M contém PO direta, NRE e framework call-off. A lógica deve reconhecer apenas SEK 22,495M no curto prazo e classificar o conjunto como NRE_DOMINATED_BACKLOG.\n"
   },
-  "sources": [],
+  "sources": [
+    {
+      "field": "share_price_usd",
+      "value": 4.536,
+      "source": "Board communication concerning CEO share issue",
+      "confidence": "high",
+      "as_of": "2024-09-17"
+    },
+    {
+      "field": "current_shares",
+      "value": 235884460,
+      "source": "Reconstructed share count",
+      "confidence": "high",
+      "as_of": "2024-09-17"
+    },
+    {
+      "field": "market_cap_usd",
+      "value": 1070091900,
+      "source": "Calculated: SEK 4.536 multiplied by 235,884,460 shares",
+      "confidence": "high",
+      "as_of": "2024-09-17"
+    },
+    {
+      "field": "cash_usd",
+      "value": 78000000,
+      "source": "Sivers Q1 2024 report: cash plus credit facilities",
+      "confidence": "high",
+      "as_of": "2024-09-17"
+    },
+    {
+      "field": "total_debt_usd",
+      "value": 50000000,
+      "source": "Formue Nord financing announced March 2024",
+      "confidence": "high",
+      "as_of": "2024-09-17"
+    },
+    {
+      "field": "current_revenue_usd",
+      "value": 240531000,
+      "source": "Reconstructed LTM revenue",
+      "confidence": "high",
+      "as_of": "2024-09-17"
+    },
+    {
+      "field": "current_ebitda_usd",
+      "value": -22377000,
+      "source": "Reconstructed LTM EBITDA",
+      "confidence": "high",
+      "as_of": "2024-09-17"
+    },
+    {
+      "field": "revenue_quality_gates",
+      "value": "SEK 101.4M gross backlog; SEK 22.495M effective near-term revenue",
+      "source": "Four announced agreements decomposed by contractual nature",
+      "confidence": "high",
+      "as_of": "2024-09-17"
+    },
+    {
+      "field": "scenario_assumptions",
+      "value": "Heuristic analyst assumptions; not company guidance",
+      "source": "Analyst scenario design",
+      "confidence": "low",
+      "as_of": "2024-09-17"
+    }
+  ],
   "validation": {
     "validation_version": "VALIDATION-1.0.2",
     "status": "PASS",
     "schema_errors": [],
     "financial_errors": [],
     "economic_warnings": [
-      "Material input 'cash_usd' has no source metadata.",
-      "Material input 'current_revenue_usd' has no source metadata.",
-      "Material input 'current_shares' has no source metadata.",
       "Material input 'factory_proxy' has no source metadata.",
-      "Material input 'market_cap_usd' has no source metadata.",
-      "Material input 'scenario_assumptions' has no source metadata.",
-      "Material input 'share_price_usd' has no source metadata.",
-      "Material input 'total_debt_usd' has no source metadata."
+      "Material evidence 'scenario_assumptions' has low confidence and requires verification."
     ],
     "input_coverage": {
       "material_fields_required": 8,
-      "material_fields_with_source": 0,
-      "material_fields_with_as_of": 0,
-      "material_fields_with_confidence": 0,
-      "coverage_pct": 0.0
+      "material_fields_with_source": 7,
+      "material_fields_with_as_of": 7,
+      "material_fields_with_confidence": 7,
+      "coverage_pct": 87.5
     }
   },
   "config_version": "CASE-CONFIG-4.2.0"

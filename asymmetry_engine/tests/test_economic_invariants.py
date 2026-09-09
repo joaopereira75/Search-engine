@@ -237,6 +237,37 @@ def test_changing_debt_context_cash_does_not_change_valuation_cash() -> None:
     assert stressed_equity == baseline_equity
 
 
+def test_higher_base_ebit_margin_never_reduces_incremental_roic() -> None:
+    # [FIX 18] incremental_roic era um output-fantasma (sempre None). Este
+    # teste protege a correção: uma margem mais alta no cenário Base nunca
+    # deve reduzir o incremental_roic reportado para esse cenário.
+    loaded = _loaded_wolf_case()
+    values = [0.05, 0.08, 0.12, 0.16, 0.20, 0.25]
+
+    roics = [
+        _scenario_by_name(
+            _run_with_driver(loaded, "scenarios.Base.ebit_margin", value),
+            "Base",
+        )["incremental_roic"]
+        for value in values
+    ]
+
+    assert all(roic is not None for roic in roics)
+    assert roics == sorted(roics)
+
+
+def test_incremental_roic_is_none_not_misleading_when_revenue_declines() -> None:
+    # Bear do Wolfspeed tem revenue_cagr negativo: capital incremental
+    # implícito é <= 0, o que não tem significado económico como
+    # denominador de um rácio de retorno. Deve devolver None, não um
+    # número negativo ou positivo espúrio.
+    loaded = _loaded_wolf_case()
+    result = run_case_config(loaded)
+    bear = _scenario_by_name(result, "Bear")
+
+    assert bear["incremental_roic"] is None
+
+
 def test_changing_financial_cash_increases_valuation_equity_value() -> None:
     loaded = _loaded_wolf_case()
     output = run_one_way_sensitivity(

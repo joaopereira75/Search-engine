@@ -432,6 +432,52 @@ class ExpectationsGapEngine:
             fcff_path.append(nopat_t - nopat_t * reinvestment_rate)
         return fcff_path, ebit_path, nol
 
+    def _incremental_roic_from_fcff_path(self, revenue_path, fcff_path, reinvestment_rate) -> Optional[float]:
+        # [FIX 18] incremental_roic era um output fantasma: existia no schema
+        # de sensitivity_engine.extract_snapshot() (base.get("incremental_roic")),
+        # mas nenhum método do motor alguma vez escrevia essa chave — devolvia
+        # sempre None, em todos os casos reais, sem aviso nenhum.
+        #
+        # PRIMEIRA VERSÃO DESTE FIX (histórico, corrigida antes de chegar a
+        # produção): definir capital reinvestido como NOPAT_t * reinvestment_rate
+        # produz um rácio matematicamente invariante à ebit_margin sempre que
+        # o NOL não é o fator limitante — porque tanto o NOPAT incremental
+        # como esse "reinvestimento" escalam linearmente com a margem e
+        # cancelam-se na divisão. Confirmado empiricamente no caso Wolfspeed
+        # (nol_balance_usd=0): incremental_roic ficava idêntico para
+        # ebit_margin entre 5% e 25%. Isso não é o que "incremental ROIC"
+        # deve significar — uma empresa com margem mais alta deve ser mais
+        # eficiente em capital, não igualmente eficiente por definição.
+        #
+        # VERSÃO CORRIGIDA: usa ValuationAssumptions.revenue_to_invested_capital
+        # (também um campo-fantasma até este fix) como rácio de rotação de
+        # capital — a definição standard: Invested_Capital = Revenue / Turnover.
+        #   ΔInvestedCapital = (Revenue_N - Revenue_1) / revenue_to_invested_capital
+        #   NOPAT_t = fcff_t / (1 - reinvestment_rate)   [reinvestment_rate é
+        #     escalar e constante ao longo do path, logo esta inversão é exata]
+        #   incremental_roic = (NOPAT_N - NOPAT_1) / ΔInvestedCapital
+        # Agora varia corretamente com a margem, porque o denominador depende
+        # só de receita e rotação de capital, nunca de NOPAT.
+        #
+        # Devolve None quando não é computável: menos de 2 anos de forecast,
+        # reinvestment_rate=100% (NOPAT indeterminado por esta via), ou
+        # ΔInvestedCapital <= 0 (receita estagnada ou a cair — divisão sem
+        # significado económico nesses casos, não um erro a esconder).
+        if reinvestment_rate is None or reinvestment_rate >= 1.0:
+            return None
+        if len(fcff_path) < 2 or len(revenue_path) < 2:
+            return None
+        turnover = self.valuation.revenue_to_invested_capital
+        if turnover is None or turnover <= 0:
+            return None
+        delta_invested_capital = (revenue_path[-1] - revenue_path[0]) / turnover
+        if delta_invested_capital <= 1e-9:
+            return None
+        nopat_first = fcff_path[0] / (1.0 - reinvestment_rate)
+        nopat_last = fcff_path[-1] / (1.0 - reinvestment_rate)
+        roic = (nopat_last - nopat_first) / delta_invested_capital
+        return float(roic) if np.isfinite(roic) else None
+
     def _terminal_value_exit_multiple(self, ebit_year_n: float, exit_multiple: float) -> float:
         return ebit_year_n * exit_multiple
 
@@ -552,6 +598,7 @@ class ExpectationsGapEngine:
 
         physical_check = self.physical_feasibility_gap(revenue_n, years_from_now=years)
         margin_check = self.margin_credibility_check(scenario.ebit_margin)
+        incremental_roic = self._incremental_roic_from_fcff_path(revenue_path, fcff_path, scenario.reinvestment_rate)
 
         # [FIX 16] survival_and_dilution()/estimate_scenario_funding_need()
         # existiam desde a v4.0.2 mas nunca eram chamados por run()/
@@ -615,6 +662,7 @@ class ExpectationsGapEngine:
             "equity_value_usd": float(equity_value_current_shareholders),
             "terminal_value_pct_of_ev": float(tv_pct_of_ev) if np.isfinite(tv_pct_of_ev) else np.nan,
             "tv_dominance_flag": tv_dominance_flag, "physical_feasibility": physical_check, "margin_credibility": margin_check,
+            "incremental_roic": incremental_roic,
             "funding_check": funding_check, "dilution_assumption_gap_usd": float(dilution_assumption_gap_usd),
             "scenario_red_flags": red_flags, "return_multiple": float(return_multiple), "return_pct": float(return_multiple - 1.0),
         }

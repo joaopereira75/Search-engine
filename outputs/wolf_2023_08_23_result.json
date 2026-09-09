@@ -43,6 +43,7 @@
           "status": "PHYSICALLY_CONSISTENT",
           "margin_gap_pp": -0.96
         },
+        "incremental_roic": null,
         "funding_check": {
           "status": "SURVIVES_TO_INFLECTION",
           "funding_gap_usd": 0.0,
@@ -75,6 +76,7 @@
           "status": "PHYSICALLY_CONSISTENT",
           "margin_gap_pp": -0.88
         },
+        "incremental_roic": 0.14220000000000002,
         "funding_check": {
           "status": "SURVIVES_TO_INFLECTION",
           "funding_gap_usd": 0.0,
@@ -107,6 +109,7 @@
           "status": "PHYSICALLY_CONSISTENT",
           "margin_gap_pp": -0.78
         },
+        "incremental_roic": 0.2607,
         "funding_check": {
           "status": "SURVIVES_TO_INFLECTION",
           "funding_gap_usd": 0.0,
@@ -147,6 +150,7 @@
             "status": "PHYSICALLY_CONSISTENT",
             "margin_gap_pp": -0.96
           },
+          "incremental_roic": null,
           "funding_check": {
             "status": "SURVIVES_TO_INFLECTION",
             "funding_gap_usd": 0.0,
@@ -179,6 +183,7 @@
             "status": "PHYSICALLY_CONSISTENT",
             "margin_gap_pp": -0.88
           },
+          "incremental_roic": 0.14220000000000002,
           "funding_check": {
             "status": "SURVIVES_TO_INFLECTION",
             "funding_gap_usd": 0.0,
@@ -211,6 +216,7 @@
             "status": "PHYSICALLY_CONSISTENT",
             "margin_gap_pp": -0.78
           },
+          "incremental_roic": 0.2607,
           "funding_check": {
             "status": "SURVIVES_TO_INFLECTION",
             "funding_gap_usd": 0.0,
@@ -284,31 +290,96 @@
     "point_in_time": "2023-08-23",
     "currency": "USD",
     "case_type": "historical validation",
-    "notes": "regeneracao pos-fix"
+    "notes": "Caso de capacidade industrial e risco de estrutura de capital. O objetivo principal é testar que FCF negativo depleta o cash projetado e que uma maturity wall não coberta produz CAPITAL_STRUCTURE_CRISIS_RISK. A unidade de capacidade é uma proxy económica de receita de wafers/dispositivos. ASP de 5 USD produz um teto de receita de 1,8B USD: suficiente para o cenário Base (cerca de 1,624B USD no ano 5), mas não para o cenário Bull (cerca de 3,62B USD), que deve continuar fisicamente unsupported. Termos dos convertíveis são aproximações históricas e devem ser confirmados no filing original antes de uso de investimento real.\n"
   },
-  "sources": [],
+  "sources": [
+    {
+      "field": "share_price_usd",
+      "value": 44.1,
+      "source": "Historical market close around FY2023 Q4 earnings release",
+      "confidence": "high",
+      "as_of": "2023-08-23"
+    },
+    {
+      "field": "current_shares",
+      "value": 124794000,
+      "source": "Wolfspeed FY2023 10-K",
+      "confidence": "high",
+      "as_of": "2023-08-23"
+    },
+    {
+      "field": "market_cap_usd",
+      "value": 5503700000,
+      "source": "Calculated from share price and shares outstanding",
+      "confidence": "medium",
+      "as_of": "2023-08-23"
+    },
+    {
+      "field": "cash_usd",
+      "value": 2954900000,
+      "source": "Wolfspeed FY2023 10-K: cash and investments",
+      "confidence": "high",
+      "as_of": "2023-08-23"
+    },
+    {
+      "field": "total_debt_usd",
+      "value": 4175100000,
+      "source": "Wolfspeed FY2023 10-K: long-term debt plus convertible notes",
+      "confidence": "high",
+      "as_of": "2023-08-23"
+    },
+    {
+      "field": "current_revenue_usd",
+      "value": 807200000,
+      "source": "Wolfspeed FY2023 revenue",
+      "confidence": "high",
+      "as_of": "2023-08-23"
+    },
+    {
+      "field": "factory_proxy",
+      "value": "2.0B proxy capacity units, 20% utilisation, 90% yield and 5 USD ASP",
+      "source": "Economic proxy for physical-feasibility stress; not a literal unit-price disclosure",
+      "confidence": "low",
+      "as_of": "2023-08-23"
+    },
+    {
+      "field": "annual_fcf_usd",
+      "value": -1820000000,
+      "source": "Annualized from Q4 FY2023 FCF of approximately negative $455M",
+      "confidence": "medium",
+      "as_of": "2023-08-23"
+    },
+    {
+      "field": "debt_structure",
+      "value": "Convertible tranches and conversion terms are approximate historical inputs",
+      "source": "Historical reconstruction; verify against original convertible note disclosures",
+      "confidence": "low",
+      "as_of": "2023-08-23"
+    },
+    {
+      "field": "scenario_assumptions",
+      "value": "Heuristic analyst assumptions; not company guidance",
+      "source": "Analyst scenario design",
+      "confidence": "low",
+      "as_of": "2023-08-23"
+    }
+  ],
   "validation": {
     "validation_version": "VALIDATION-1.0.2",
     "status": "PASS",
     "schema_errors": [],
     "financial_errors": [],
     "economic_warnings": [
-      "Material input 'cash_usd' has no source metadata.",
-      "Material input 'current_revenue_usd' has no source metadata.",
-      "Material input 'current_shares' has no source metadata.",
-      "Material input 'debt_structure' has no source metadata.",
-      "Material input 'factory_proxy' has no source metadata.",
-      "Material input 'market_cap_usd' has no source metadata.",
-      "Material input 'scenario_assumptions' has no source metadata.",
-      "Material input 'share_price_usd' has no source metadata.",
-      "Material input 'total_debt_usd' has no source metadata."
+      "Material evidence 'factory_proxy' has low confidence and requires verification.",
+      "Material evidence 'debt_structure' has low confidence and requires verification.",
+      "Material evidence 'scenario_assumptions' has low confidence and requires verification."
     ],
     "input_coverage": {
       "material_fields_required": 9,
-      "material_fields_with_source": 0,
-      "material_fields_with_as_of": 0,
-      "material_fields_with_confidence": 0,
-      "coverage_pct": 0.0
+      "material_fields_with_source": 9,
+      "material_fields_with_as_of": 9,
+      "material_fields_with_confidence": 9,
+      "coverage_pct": 100.0
     }
   },
   "config_version": "CASE-CONFIG-4.2.0"
