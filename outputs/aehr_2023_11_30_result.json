@@ -46,7 +46,9 @@
         "dilution_assumption_gap_usd": -50000000.0,
         "scenario_red_flags": [],
         "return_multiple": 0.01380643913497704,
-        "return_pct": -0.986193560865023
+        "return_pct": -0.986193560865023,
+        "implied_price_target_usd": 0.3169571630208737,
+        "implied_upside_vs_share_price_pct": -0.9861952455130282
       },
       {
         "scenario": "Base",
@@ -77,7 +79,9 @@
         "dilution_assumption_gap_usd": -20000000.0,
         "scenario_red_flags": [],
         "return_multiple": 0.16895463422560347,
-        "return_pct": -0.8310453657743966
+        "return_pct": -0.8310453657743966,
+        "implied_price_target_usd": 3.8787250658796126,
+        "implied_upside_vs_share_price_pct": -0.8310659814512364
       },
       {
         "scenario": "Bull",
@@ -110,7 +114,9 @@
           "terminal_value_dominates_thesis"
         ],
         "return_multiple": 0.7052442682481608,
-        "return_pct": -0.2947557317518392
+        "return_pct": -0.2947557317518392,
+        "implied_price_target_usd": 16.190432617370227,
+        "implied_upside_vs_share_price_pct": -0.2948417849577427
       }
     ],
     "probability_weighted_valuation": {
@@ -146,7 +152,9 @@
           "dilution_assumption_gap_usd": -50000000.0,
           "scenario_red_flags": [],
           "return_multiple": 0.01380643913497704,
-          "return_pct": -0.986193560865023
+          "return_pct": -0.986193560865023,
+          "implied_price_target_usd": 0.3169571630208737,
+          "implied_upside_vs_share_price_pct": -0.9861952455130282
         },
         {
           "scenario": "Base",
@@ -177,7 +185,9 @@
           "dilution_assumption_gap_usd": -20000000.0,
           "scenario_red_flags": [],
           "return_multiple": 0.16895463422560347,
-          "return_pct": -0.8310453657743966
+          "return_pct": -0.8310453657743966,
+          "implied_price_target_usd": 3.8787250658796126,
+          "implied_upside_vs_share_price_pct": -0.8310659814512364
         },
         {
           "scenario": "Bull",
@@ -210,7 +220,9 @@
             "terminal_value_dominates_thesis"
           ],
           "return_multiple": 0.7052442682481608,
-          "return_pct": -0.2947557317518392
+          "return_pct": -0.2947557317518392,
+          "implied_price_target_usd": 16.190432617370227,
+          "implied_upside_vs_share_price_pct": -0.2948417849577427
         }
       ]
     },

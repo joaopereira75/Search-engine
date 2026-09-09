@@ -52,7 +52,9 @@
         "dilution_assumption_gap_usd": -45000000.0,
         "scenario_red_flags": [],
         "return_multiple": 0.0,
-        "return_pct": -1.0
+        "return_pct": -1.0,
+        "implied_price_target_usd": 0.0,
+        "implied_upside_vs_share_price_pct": -1.0
       },
       {
         "scenario": "Base",
@@ -87,7 +89,9 @@
           "terminal_value_dominates_thesis"
         ],
         "return_multiple": 0.0,
-        "return_pct": -1.0
+        "return_pct": -1.0,
+        "implied_price_target_usd": 0.0,
+        "implied_upside_vs_share_price_pct": -1.0
       },
       {
         "scenario": "Bull",
@@ -122,7 +126,9 @@
           "terminal_value_dominates_thesis"
         ],
         "return_multiple": 0.2750820472371364,
-        "return_pct": -0.7249179527628635
+        "return_pct": -0.7249179527628635,
+        "implied_price_target_usd": 0.6048710218907448,
+        "implied_upside_vs_share_price_pct": -0.7250586264132979
       }
     ],
     "probability_weighted_valuation": {
@@ -160,7 +166,9 @@
           "dilution_assumption_gap_usd": -45000000.0,
           "scenario_red_flags": [],
           "return_multiple": 0.0,
-          "return_pct": -1.0
+          "return_pct": -1.0,
+          "implied_price_target_usd": 0.0,
+          "implied_upside_vs_share_price_pct": -1.0
         },
         {
           "scenario": "Base",
@@ -195,7 +203,9 @@
             "terminal_value_dominates_thesis"
           ],
           "return_multiple": 0.0,
-          "return_pct": -1.0
+          "return_pct": -1.0,
+          "implied_price_target_usd": 0.0,
+          "implied_upside_vs_share_price_pct": -1.0
         },
         {
           "scenario": "Bull",
@@ -230,7 +240,9 @@
             "terminal_value_dominates_thesis"
           ],
           "return_multiple": 0.2750820472371364,
-          "return_pct": -0.7249179527628635
+          "return_pct": -0.7249179527628635,
+          "implied_price_target_usd": 0.6048710218907448,
+          "implied_upside_vs_share_price_pct": -0.7250586264132979
         }
       ]
     },

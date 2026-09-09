@@ -268,6 +268,36 @@ def test_incremental_roic_is_none_not_misleading_when_revenue_declines() -> None
     assert bear["incremental_roic"] is None
 
 
+def test_more_shares_never_increases_implied_price_target() -> None:
+    # [FIX 19] implied_price_target_usd era um output-fantasma: current_shares
+    # nunca era lido pelo motor de valuation, só por validation.py. Este
+    # teste protege a correção: mantendo o equity_value_usd do cenário Base
+    # constante, mais current_shares em circulação nunca deve produzir um
+    # price target por ação mais alto (mais ações a dividir o mesmo bolo).
+    loaded = _loaded_wolf_case()
+    values = [50_000_000, 80_000_000, 124_794_000, 200_000_000, 400_000_000]
+
+    targets = [
+        _scenario_by_name(
+            _run_with_driver(loaded, "financials.current_shares", value),
+            "Base",
+        )["implied_price_target_usd"]
+        for value in values
+    ]
+
+    assert all(target is not None for target in targets)
+    assert targets == sorted(targets, reverse=True)
+
+
+def test_implied_price_target_is_none_when_current_shares_missing() -> None:
+    loaded = _loaded_wolf_case()
+    result = _run_with_driver(loaded, "financials.current_shares", None)
+    base = _scenario_by_name(result, "Base")
+
+    assert base["implied_price_target_usd"] is None
+    assert base["implied_upside_vs_share_price_pct"] is None
+
+
 def test_changing_financial_cash_increases_valuation_equity_value() -> None:
     loaded = _loaded_wolf_case()
     output = run_one_way_sensitivity(

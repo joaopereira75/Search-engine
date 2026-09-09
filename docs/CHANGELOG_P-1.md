@@ -142,3 +142,41 @@ Suite completa: **57 passed, 0 failed**.
 **Ainda por fazer, sem alteração nesta sessão:**
 - `current_shares`, `share_price_usd`, `incremental_capex_usd` (Factory+Scenario) — dead, por decidir.
 - P0: sinal do FCFF sob NOPAT negativo — bloqueador estrutural documentado, intocado.
+
+## FIX 19 — `current_shares` e `share_price_usd` estavam mortos no motor de valuation
+
+Confirmado por grep + perturbação: ambos os campos eram aceites, validados,
+e usados **só** em `validation.py` (cross-check `market_cap_usd` vs.
+`share_price_usd × current_shares`, warning se divergir >2%). Nunca eram
+lidos por `value_scenario()` — os 4 casos reais (aehr/poet/sive/wolf) têm os
+dois campos preenchidos no YAML sem qualquer efeito no output do motor.
+
+**Aplicado e testado:** `value_scenario()` agora devolve
+`implied_price_target_usd` (`equity_value_current_shareholders / current_shares`)
+e `implied_upside_vs_share_price_pct` (`implied_price_target_usd / share_price_usd - 1`).
+Ambos devolvem `None` quando `current_shares` (ou `share_price_usd`, no
+segundo caso) não está definido ou não é positivo — mesmo padrão de
+"None em vez de número enganoso" do FIX 18.
+
+`implied_upside_vs_share_price_pct` não é redundante com `return_pct`:
+`return_pct` compara contra `market_cap_usd`, que pode divergir de
+`share_price_usd × current_shares` em até 2% sem gerar `HARD_FAIL`. Quando
+essa divergência existe, os dois retornos deixam de ser idênticos por
+construção — confirmado nos 4 casos reais (ex.: SIVE Bull: 59.8% vs. 59.7%).
+
+**Testes novos:** `test_more_shares_never_increases_implied_price_target`
+(mais ações em circulação, equity fixo, nunca aumenta o price target),
+`test_implied_price_target_is_none_when_current_shares_missing`.
+Suite completa: **59 passed, 0 failed** (57 anteriores + 2 novos).
+
+**Outputs regenerados:** os 4 JSONs em `outputs/` foram recriados via
+`python -m asymmetry_engine.cli run` para incluírem os dois novos campos.
+
+**`incremental_capex_usd` (Factory+Scenario): decisão adiada de propósito.**
+Ao contrário dos dois campos acima, este não foi ligado nesta sessão. O
+próprio código já avisa que incorporá-lo corretamente no FCFF exige decidir
+como interage com `reinvestment_rate` para não duplicar contagem de capex —
+essa é uma decisão de capital structure que pertence ao P0, não a um fix
+isolado e contido. Continua listado como "confirmado morto" no
+`GHOST_PARAMETER_AUDIT.md`, agora com a razão explícita para não ter sido
+resolvido junto com os outros dois.

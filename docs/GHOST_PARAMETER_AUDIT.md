@@ -73,16 +73,22 @@ um número espúrio, sempre que a receita implícita do cenário não cresce.
 ## Confirmado morto (grep + perturbação concordam)
 - `FinancialInputs.current_ebitda_usd`
 - `FinancialInputs.current_invested_capital_usd`
-- `FinancialInputs.current_shares` (só usado em validation.py para warning, não no motor)
-- `FinancialInputs.share_price_usd` (idem)
-- `FactoryData.incremental_capex_usd`
-- `Scenario.incremental_capex_usd`
+- `FactoryData.incremental_capex_usd` — decisão adiada de propósito para o
+  P0: o próprio código avisa que ligar isto ao FCFF exige decidir a
+  interação com `reinvestment_rate` para não duplicar contagem de capex.
+  Ver CHANGELOG_P-1.md FIX 19.
+- `Scenario.incremental_capex_usd` — idem.
 - `EngineConfig.min_incremental_roic_for_value_creation`
 - `EngineConfig.strong_incremental_roic_spread`
 - `EngineConfig.revenue_search_low` / `.revenue_search_high` (+ `brentq` importado, nunca chamado)
 
 ~~`ValuationAssumptions.revenue_to_invested_capital`~~ — **já não está morto**,
 ver secção acima.
+
+~~`FinancialInputs.current_shares` / `.share_price_usd`~~ — **já não estão
+mortos.** Ligados em `value_scenario()` via FIX 19: `implied_price_target_usd`
+e `implied_upside_vs_share_price_pct`, com `None` quando os campos não estão
+definidos. Ver CHANGELOG_P-1.md FIX 19.
 
 ## Precisam de re-teste condicional antes de classificar (falsos negativos do meu harness)
 - `FactoryData.qualification_lead_time_years`

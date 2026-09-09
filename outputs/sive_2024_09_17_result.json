@@ -59,7 +59,9 @@
           "backlog_is_nre_dominated_not_committed_revenue"
         ],
         "return_multiple": 0.0,
-        "return_pct": -1.0
+        "return_pct": -1.0,
+        "implied_price_target_usd": 0.0,
+        "implied_upside_vs_share_price_pct": -1.0
       },
       {
         "scenario": "Base",
@@ -99,7 +101,9 @@
           "backlog_is_nre_dominated_not_committed_revenue"
         ],
         "return_multiple": 0.32759825469225684,
-        "return_pct": -0.6724017453077431
+        "return_pct": -0.6724017453077431,
+        "implied_price_target_usd": 1.4861523255933056,
+        "implied_upside_vs_share_price_pct": -0.6723650075852501
       },
       {
         "scenario": "Bull",
@@ -139,7 +143,9 @@
           "backlog_is_nre_dominated_not_committed_revenue"
         ],
         "return_multiple": 1.5974760252006213,
-        "return_pct": 0.5974760252006213
+        "return_pct": 0.5974760252006213,
+        "implied_price_target_usd": 7.246963852605554,
+        "implied_upside_vs_share_price_pct": 0.5976551703275033
       }
     ],
     "probability_weighted_valuation": {
@@ -183,7 +189,9 @@
             "backlog_is_nre_dominated_not_committed_revenue"
           ],
           "return_multiple": 0.0,
-          "return_pct": -1.0
+          "return_pct": -1.0,
+          "implied_price_target_usd": 0.0,
+          "implied_upside_vs_share_price_pct": -1.0
         },
         {
           "scenario": "Base",
@@ -223,7 +231,9 @@
             "backlog_is_nre_dominated_not_committed_revenue"
           ],
           "return_multiple": 0.32759825469225684,
-          "return_pct": -0.6724017453077431
+          "return_pct": -0.6724017453077431,
+          "implied_price_target_usd": 1.4861523255933056,
+          "implied_upside_vs_share_price_pct": -0.6723650075852501
         },
         {
           "scenario": "Bull",
@@ -263,7 +273,9 @@
             "backlog_is_nre_dominated_not_committed_revenue"
           ],
           "return_multiple": 1.5974760252006213,
-          "return_pct": 0.5974760252006213
+          "return_pct": 0.5974760252006213,
+          "implied_price_target_usd": 7.246963852605554,
+          "implied_upside_vs_share_price_pct": 0.5976551703275033
         }
       ]
     },

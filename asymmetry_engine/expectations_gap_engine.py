@@ -636,6 +636,34 @@ class ExpectationsGapEngine:
         equity_value_current_shareholders = max(0.0, equity_value_pre_dilution - scenario.dilution_usd)
         return_multiple = equity_value_current_shareholders / self.financials.market_cap_usd
 
+        # [FIX 19] current_shares e share_price_usd eram campos-fantasma no
+        # motor de valuation: aceites, validados, e usados apenas em
+        # validation.py (cross-check market_cap_usd vs share_price_usd x
+        # current_shares) — nunca em value_scenario(). Os 4 casos reais
+        # (aehr/poet/sive/wolf) têm ambos os campos preenchidos no YAML, sem
+        # qualquer uso no output do motor. Corrigido: implied_price_target_usd
+        # = equity_value_current_shareholders / current_shares. Devolve None
+        # quando current_shares não está definido ou não é positivo, em vez
+        # de um ZeroDivisionError ou um número sem significado.
+        #
+        # implied_upside_vs_share_price_pct usa share_price_usd diretamente
+        # (não é redundante com return_pct): return_pct compara contra
+        # market_cap_usd, que pode divergir de share_price_usd x
+        # current_shares em até 2% sem gerar HARD_FAIL (ver
+        # _validate_economic_consistency). Quando essa divergência existe,
+        # os dois retornos percentuais deixam de ser idênticos por
+        # construção -- o que é informação real, não ruído.
+        if self.financials.current_shares is not None and self.financials.current_shares > 0:
+            implied_price_target_usd = equity_value_current_shareholders / self.financials.current_shares
+        else:
+            implied_price_target_usd = None
+
+        if implied_price_target_usd is not None and self.financials.share_price_usd is not None \
+                and self.financials.share_price_usd > 0:
+            implied_upside_vs_share_price_pct = (implied_price_target_usd / self.financials.share_price_usd) - 1.0
+        else:
+            implied_upside_vs_share_price_pct = None
+
         red_flags = []
         if physical_check.get("status") == "PHYSICALLY_UNSUPPORTED":
             red_flags.append("scenario_exceeds_physical_capacity")
@@ -665,6 +693,9 @@ class ExpectationsGapEngine:
             "incremental_roic": incremental_roic,
             "funding_check": funding_check, "dilution_assumption_gap_usd": float(dilution_assumption_gap_usd),
             "scenario_red_flags": red_flags, "return_multiple": float(return_multiple), "return_pct": float(return_multiple - 1.0),
+            "implied_price_target_usd": float(implied_price_target_usd) if implied_price_target_usd is not None else None,
+            "implied_upside_vs_share_price_pct": float(implied_upside_vs_share_price_pct)
+                if implied_upside_vs_share_price_pct is not None else None,
         }
 
     def probability_weighted_value(self, scenario_results=None):

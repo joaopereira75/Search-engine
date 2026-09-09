@@ -52,7 +52,9 @@
         "dilution_assumption_gap_usd": -1500000000.0,
         "scenario_red_flags": [],
         "return_multiple": 0.0,
-        "return_pct": -1.0
+        "return_pct": -1.0,
+        "implied_price_target_usd": 0.0,
+        "implied_upside_vs_share_price_pct": -1.0
       },
       {
         "scenario": "Base",
@@ -85,7 +87,9 @@
         "dilution_assumption_gap_usd": -750000000.0,
         "scenario_red_flags": [],
         "return_multiple": 0.0,
-        "return_pct": -1.0
+        "return_pct": -1.0,
+        "implied_price_target_usd": 0.0,
+        "implied_upside_vs_share_price_pct": -1.0
       },
       {
         "scenario": "Bull",
@@ -121,7 +125,9 @@
           "terminal_value_dominates_thesis"
         ],
         "return_multiple": 0.9604949411974739,
-        "return_pct": -0.03950505880252608
+        "return_pct": -0.03950505880252608,
+        "implied_price_target_usd": 42.36001737157665,
+        "implied_upside_vs_share_price_pct": -0.03945538839962237
       }
     ],
     "probability_weighted_valuation": {
@@ -159,7 +165,9 @@
           "dilution_assumption_gap_usd": -1500000000.0,
           "scenario_red_flags": [],
           "return_multiple": 0.0,
-          "return_pct": -1.0
+          "return_pct": -1.0,
+          "implied_price_target_usd": 0.0,
+          "implied_upside_vs_share_price_pct": -1.0
         },
         {
           "scenario": "Base",
@@ -192,7 +200,9 @@
           "dilution_assumption_gap_usd": -750000000.0,
           "scenario_red_flags": [],
           "return_multiple": 0.0,
-          "return_pct": -1.0
+          "return_pct": -1.0,
+          "implied_price_target_usd": 0.0,
+          "implied_upside_vs_share_price_pct": -1.0
         },
         {
           "scenario": "Bull",
@@ -228,7 +238,9 @@
             "terminal_value_dominates_thesis"
           ],
           "return_multiple": 0.9604949411974739,
-          "return_pct": -0.03950505880252608
+          "return_pct": -0.03950505880252608,
+          "implied_price_target_usd": 42.36001737157665,
+          "implied_upside_vs_share_price_pct": -0.03945538839962237
         }
       ]
     },
